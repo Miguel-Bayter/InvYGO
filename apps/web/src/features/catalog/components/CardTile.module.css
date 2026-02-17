@@ -1,0 +1,119 @@
+.tile {
+  background: var(--surface-card);
+  border: var(--border-hud);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-base),
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.tile:hover {
+  border-color: var(--color-cyan-hud);
+  transform: translateY(-3px);
+  box-shadow: var(--glow-cyan);
+}
+
+/* ── Image ─────────────────────────────────── */
+.imageWrapper {
+  position: relative;
+  aspect-ratio: 59 / 86; /* Standard YGO card ratio */
+  background: var(--surface-panel);
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--transition-base);
+}
+
+.tile:hover .image {
+  transform: scale(1.04);
+}
+
+.imageFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: var(--color-muted);
+}
+
+/* ── Badges over image ──────────────────────── */
+.frameBadge {
+  position: absolute;
+  top: var(--space-1);
+  left: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  background: rgba(6, 26, 43, 0.85);
+  color: var(--color-muted);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2px 5px;
+  border-radius: var(--radius-sm);
+}
+
+.attrBadge {
+  position: absolute;
+  top: var(--space-1);
+  right: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #fff;
+  padding: 2px 5px;
+  border-radius: var(--radius-sm);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Info ───────────────────────────────────── */
+.info {
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-white);
+  line-height: 1.3;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.type {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stats {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: 2px;
+}
+
+.stats span {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--color-cyan-hud);
+}

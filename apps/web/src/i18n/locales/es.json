@@ -1,0 +1,76 @@
+{
+  "nav": {
+    "catalog": "Catálogo",
+    "inventory": "Inventario",
+    "decks": "Decks",
+    "missing": "Faltantes"
+  },
+  "home": {
+    "subtitle": "Gestiona tu colección. Construye tus decks. Domina el meta.",
+    "stats": {
+      "catalog": "Catálogo",
+      "inventory": "Inventario",
+      "decks": "Decks",
+      "missing": "Faltantes",
+      "cardsAvailable": "cartas disponibles",
+      "cardsRegistered": "cartas registradas",
+      "activeDecks": "decks activos",
+      "noActiveDeck": "sin deck activo"
+    }
+  },
+  "catalog": {
+    "title": "Catálogo",
+    "subtitleCount": "{{count, number}} cartas encontradas",
+    "subtitleExploring": "Explorando cartas YGO",
+    "search": {
+      "placeholder": "Buscar carta por nombre...",
+      "clearLabel": "Limpiar búsqueda"
+    },
+    "filters": {
+      "attribute": "Atributo",
+      "race": "Raza / Tipo",
+      "level": "Nivel / Rango",
+      "archetype": "Arquetipo",
+      "atk": "ATK exacto",
+      "def": "DEF exacto",
+      "all": "Todos",
+      "loading": "Cargando...",
+      "activeFilter_one": "{{count}} filtro activo",
+      "activeFilter_other": "{{count}} filtros activos",
+      "clearFilters": "Limpiar filtros"
+    }
+  },
+  "pagination": {
+    "showing": "{{from}}–{{to}} de {{total, number}} cartas",
+    "firstPage": "Primera página",
+    "prevPage": "Página anterior",
+    "nextPage": "Página siguiente",
+    "lastPage": "Última página"
+  },
+  "ui": {
+    "loading": "Cargando...",
+    "error": {
+      "connectionTitle": "Error de conexión",
+      "connectionMessage": "No se pudo contactar al servidor. Verificá tu conexión e intentá de nuevo.",
+      "serviceUnavailableTitle": "Servicio no disponible",
+      "serviceUnavailableMessage": "La API está temporalmente caída. Intentá de nuevo en unos segundos.",
+      "loadCardsTitle": "Error al cargar cartas",
+      "loadCardsMessage": "No se pudieron cargar las cartas. Revisá tu conexión.",
+      "retry": "Reintentar"
+    },
+    "empty": {
+      "title": "Sin resultados",
+      "withFilters": "Ninguna carta coincide con los filtros aplicados. Probá ajustarlos.",
+      "withSearch": "No se encontraron cartas. Probá con otro término de búsqueda.",
+      "default": "No se encontraron cartas para la búsqueda actual."
+    }
+  },
+  "placeholder": {
+    "comingSoon": "Esta sección estará disponible próximamente."
+  },
+  "router": {
+    "inventory": "Mi Inventario",
+    "deckBuilder": "Deck Builder",
+    "missingCards": "Cartas Faltantes"
+  }
+}

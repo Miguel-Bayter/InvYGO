@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(del:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run lint:*)",
+      "Bash(curl:*)",
+      "WebFetch(domain:ygo-api-wrapper-177404616225.us-central1.run.app)",
+      "Bash(npm run typecheck:*)"
+    ]
+  }
+}

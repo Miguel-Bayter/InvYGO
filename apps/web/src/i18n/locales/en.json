@@ -1,0 +1,76 @@
+{
+  "nav": {
+    "catalog": "Catalog",
+    "inventory": "Inventory",
+    "decks": "Decks",
+    "missing": "Missing Cards"
+  },
+  "home": {
+    "subtitle": "Manage your collection. Build your decks. Dominate the meta.",
+    "stats": {
+      "catalog": "Catalog",
+      "inventory": "Inventory",
+      "decks": "Decks",
+      "missing": "Missing",
+      "cardsAvailable": "cards available",
+      "cardsRegistered": "cards registered",
+      "activeDecks": "active decks",
+      "noActiveDeck": "no active deck"
+    }
+  },
+  "catalog": {
+    "title": "Catalog",
+    "subtitleCount": "{{count, number}} cards found",
+    "subtitleExploring": "Exploring YGO cards",
+    "search": {
+      "placeholder": "Search card by name...",
+      "clearLabel": "Clear search"
+    },
+    "filters": {
+      "attribute": "Attribute",
+      "race": "Race / Type",
+      "level": "Level / Rank",
+      "archetype": "Archetype",
+      "atk": "ATK exact",
+      "def": "DEF exact",
+      "all": "All",
+      "loading": "Loading...",
+      "activeFilter_one": "{{count}} active filter",
+      "activeFilter_other": "{{count}} active filters",
+      "clearFilters": "Clear filters"
+    }
+  },
+  "pagination": {
+    "showing": "{{from}}–{{to}} of {{total, number}} cards",
+    "firstPage": "First page",
+    "prevPage": "Previous page",
+    "nextPage": "Next page",
+    "lastPage": "Last page"
+  },
+  "ui": {
+    "loading": "Loading...",
+    "error": {
+      "connectionTitle": "Connection error",
+      "connectionMessage": "Could not reach the server. Check your connection and try again.",
+      "serviceUnavailableTitle": "Service unavailable",
+      "serviceUnavailableMessage": "The API is temporarily down. Try again in a few seconds.",
+      "loadCardsTitle": "Error loading cards",
+      "loadCardsMessage": "Could not load cards. Check your connection.",
+      "retry": "Retry"
+    },
+    "empty": {
+      "title": "No results",
+      "withFilters": "No cards match the applied filters. Try adjusting them.",
+      "withSearch": "No cards found. Try a different search term.",
+      "default": "No cards were found for the current search."
+    }
+  },
+  "placeholder": {
+    "comingSoon": "This section will be available soon."
+  },
+  "router": {
+    "inventory": "My Inventory",
+    "deckBuilder": "Deck Builder",
+    "missingCards": "Missing Cards"
+  }
+}

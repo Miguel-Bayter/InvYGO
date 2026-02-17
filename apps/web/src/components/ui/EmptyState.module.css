@@ -1,0 +1,29 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-16);
+  text-align: center;
+}
+
+.icon {
+  font-size: 3rem;
+  color: var(--color-muted);
+  opacity: 0.4;
+}
+
+.title {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-muted);
+}
+
+.description {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  opacity: 0.7;
+  max-width: 360px;
+}
