@@ -12,8 +12,8 @@ void i18n
       en: { translation: en },
       es: { translation: es },
     },
-    fallbackLng: 'es',
-    supportedLngs: ['es', 'en'],
+    fallbackLng: 'en',
+    supportedLngs: ['en', 'es'],
     interpolation: {
       escapeValue: false, // React already escapes values
     },

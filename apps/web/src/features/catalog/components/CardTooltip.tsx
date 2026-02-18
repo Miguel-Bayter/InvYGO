@@ -6,27 +6,49 @@ import styles from './CardTooltip.module.css'
 interface Props {
   card: Card
   anchorRect: DOMRect
+  /** Force tooltip to appear on the right side of the viewport (use in list view) */
+  preferRight?: boolean
 }
 
 const TOOLTIP_W = 380
 const TOOLTIP_MAX_H = 520
 const GAP = 14
+const EDGE_PAD = 8
 
-function getPosition(rect: DOMRect): { left: number; top: number } {
-  const spaceRight = window.innerWidth - rect.right - GAP
-  const left = spaceRight >= TOOLTIP_W ? rect.right + GAP : Math.max(8, rect.left - TOOLTIP_W - GAP)
+function formatStatValue(value: number): string {
+  if (value === -1) return '?'
+  return String(value)
+}
 
-  const top = Math.max(8, Math.min(rect.top, window.innerHeight - TOOLTIP_MAX_H - 8))
+function getPosition(rect: DOMRect, preferRight: boolean): { left: number; top: number } {
+  let left: number
+
+  if (preferRight) {
+    // List view: items are full-width so there is no space to the right of the anchor.
+    // Place the tooltip anchored to the right edge of the viewport instead.
+    left = window.innerWidth - TOOLTIP_W - EDGE_PAD
+  } else {
+    // Gallery view: prefer right of the card, fall back to left.
+    const spaceRight = window.innerWidth - rect.right - GAP
+    if (spaceRight >= TOOLTIP_W) {
+      left = rect.right + GAP
+    } else {
+      left = Math.max(EDGE_PAD, rect.left - TOOLTIP_W - GAP)
+    }
+  }
+
+  // Vertical: align tooltip top with anchor top, clamp so it never exits the viewport.
+  const top = Math.max(EDGE_PAD, Math.min(rect.top, window.innerHeight - TOOLTIP_MAX_H - EDGE_PAD))
 
   return { left, top }
 }
 
-export function CardTooltip({ card, anchorRect }: Props) {
+export function CardTooltip({ card, anchorRect, preferRight = false }: Props) {
   const { t } = useTranslation()
   const image = card.images[0]
   const price = card.prices[0]?.cardmarketPrice
   const attrColor = card.attribute ? (ATTRIBUTE_COLOR[card.attribute] ?? '#7a8fa0') : undefined
-  const { left, top } = getPosition(anchorRect)
+  const { left, top } = getPosition(anchorRect, preferRight)
 
   return (
     <div className={styles.tooltip} style={{ left, top }}>
@@ -74,10 +96,10 @@ export function CardTooltip({ card, anchorRect }: Props) {
             <div className={styles.divider} />
             <div className={styles.stats}>
               {card.attack !== undefined && (
-                <span className={styles.stat}>ATK / {card.attack}</span>
+                <span className={styles.stat}>ATK / {formatStatValue(card.attack)}</span>
               )}
               {card.defense !== undefined && (
-                <span className={styles.stat}>DEF / {card.defense}</span>
+                <span className={styles.stat}>DEF / {formatStatValue(card.defense)}</span>
               )}
             </div>
           </>

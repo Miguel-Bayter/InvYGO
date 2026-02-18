@@ -116,7 +116,7 @@ Definir historias de usuario priorizadas para construir el frontend de InvYgo co
 
 ---
 
-## EPIC D - Faltantes y compra
+## EPIC D - Faltantes integrados en Deck Builder y compra
 
 ### D1. Calculo de faltantes
 - Prioridad: `P0`
@@ -124,7 +124,7 @@ Definir historias de usuario priorizadas para construir el frontend de InvYgo co
 - Historia: Como usuario quiero saber exactamente que cartas me faltan para completar mi deck.
 - Criterios de aceptacion:
   - Formula: `faltante = max(0, cantidad_deck - cantidad_inventario)`.
-  - Vista de faltantes ordenada por prioridad.
+  - Panel de faltantes dentro del Deck Builder, ordenado por prioridad.
 
 ### D2. Mostrar precios por marketplace
 - Prioridad: `P1`
@@ -137,7 +137,7 @@ Definir historias de usuario priorizadas para construir el frontend de InvYgo co
 ### D3. Redireccion a tienda
 - Prioridad: `P1`
 - Esfuerzo: `M`
-- Historia: Como usuario quiero abrir una tienda para comprar carta faltante.
+- Historia: Como usuario quiero abrir una tienda desde el panel de faltantes integrado para comprar carta faltante.
 - Criterios de aceptacion:
   - Botones por marketplace con query por nombre.
   - Registra click de salida.

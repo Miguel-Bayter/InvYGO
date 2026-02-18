@@ -9,7 +9,7 @@ export function LanguageToggle() {
     <button
       className={styles.btn}
       onClick={() => void i18n.changeLanguage(isEs ? 'en' : 'es')}
-      aria-label={isEs ? 'Switch to English' : 'Cambiar a Español'}
+      aria-label={isEs ? 'Switch to English' : 'Switch to Spanish'}
     >
       {isEs ? 'EN' : 'ES'}
     </button>

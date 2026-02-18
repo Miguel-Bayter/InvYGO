@@ -88,7 +88,10 @@ export function CardListItem({ card }: Props) {
       )}
 
       {anchorRect &&
-        createPortal(<CardTooltip card={card} anchorRect={anchorRect} />, document.body)}
+        createPortal(
+          <CardTooltip card={card} anchorRect={anchorRect} preferRight />,
+          document.body
+        )}
     </article>
   )
 }

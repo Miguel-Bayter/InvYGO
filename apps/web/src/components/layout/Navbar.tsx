@@ -18,7 +18,7 @@ export function Navbar() {
       <nav className={styles.nav}>
         <NavLink to="/" className={styles.brand}>
           <span className={styles.brandIcon}>⬡</span>
-          <span>InvYgo</span>
+          <span>InvYGO</span>
         </NavLink>
         <ul className={styles.links}>
           {NAV_LINKS.map(link => (

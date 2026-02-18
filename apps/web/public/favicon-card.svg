@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="InvYGO card favicon">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#13b8ff" />
+      <stop offset="100%" stop-color="#0b3a5c" />
+    </linearGradient>
+  </defs>
+  <rect x="8" y="4" width="48" height="56" rx="5" fill="#061a2b" stroke="#13b8ff" stroke-width="2.5" />
+  <rect x="12" y="8" width="40" height="10" rx="2" fill="url(#bg)" />
+  <rect x="12" y="22" width="40" height="30" rx="2" fill="#1f2c3a" stroke="#13b8ff" stroke-opacity="0.45" />
+  <circle cx="32" cy="37" r="8" fill="#ffb020" />
+  <path d="M32 29 L35 37 L32 45 L29 37 Z" fill="#ff5d5d" />
+</svg>

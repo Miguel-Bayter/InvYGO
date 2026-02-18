@@ -1012,6 +1012,132 @@ import { ATTRIBUTE_COLOR } from '../constants'
 
 ---
 
+### 11. Bug fix: posicionamiento del tooltip según el contexto de layout
+
+#### El bug
+
+Al abrir la vista lista y hacer hover sobre una carta, el tooltip aparecía **encima del contenido de la propia fila**, en el extremo izquierdo de la pantalla. No era el lado derecho como el usuario esperaba.
+
+#### Diagnóstico: trazar la matemática del posicionamiento
+
+El algoritmo original calculaba la posición así:
+
+```
+spaceRight = window.innerWidth - rect.right - GAP
+left = spaceRight >= 380 ? rect.right + GAP : Math.max(8, rect.left - 380 - 14)
+```
+
+En vista **galería**, los cards son ~160px de ancho, así que:
+```
+rect.right ≈ 400px  →  spaceRight ≈ 966px  →  tooltip aparece a la DERECHA ✓
+```
+
+En vista **lista**, los items son `width: 100%` (todo el ancho del contenedor), así que:
+```
+rect.right ≈ 1350px  →  spaceRight = 1366 - 1350 - 14 = 2px  →  cae al fallback
+fallback: Math.max(8, rect.left - 380 - 14)
+        = Math.max(8, 60 - 394)
+        = Math.max(8, -334) = 8px          ← tooltip aparece en x=8, encima del item ✗
+```
+
+El tooltip quedaba pegado al borde izquierdo, exactamente donde empieza el contenido de la fila.
+
+#### Por qué ocurre este tipo de bug
+
+Este es un caso clásico de **un algoritmo correcto para un contexto, incorrecto para otro**. El algoritmo de izquierda/derecha fue diseñado pensando en cards pequeños (galería), donde siempre hay espacio libre en alguno de los dos lados. En lista, el item es tan ancho que no hay espacio en ninguno de los dos lados → el fallback da un resultado inútil.
+
+La solución no es "arreglar" el algoritmo para que funcione en ambos casos con más lógica. Es **darle al componente información sobre el contexto** para que use la estrategia correcta.
+
+#### La solución: prop `preferRight`
+
+```typescript
+interface Props {
+  card: Card
+  anchorRect: DOMRect
+  preferRight?: boolean  // nuevo: cambia la estrategia de posicionamiento
+}
+
+function getPosition(rect: DOMRect, preferRight: boolean): { left: number; top: number } {
+  let left: number
+
+  if (preferRight) {
+    // Lista: items son full-width → no hay espacio lateral.
+    // Anclar el tooltip al borde derecho del viewport.
+    left = window.innerWidth - TOOLTIP_W - 8
+    //     ─────────────────   ─────────   ─
+    //     ancho del viewport  ancho del   margen
+    //                         tooltip
+  } else {
+    // Galería: lógica original (derecha del card → izquierda si no cabe)
+    const spaceRight = window.innerWidth - rect.right - GAP
+    left = spaceRight >= TOOLTIP_W
+      ? rect.right + GAP
+      : Math.max(8, rect.left - TOOLTIP_W - GAP)
+  }
+
+  const top = Math.max(8, Math.min(rect.top, window.innerHeight - TOOLTIP_MAX_H - 8))
+  return { left, top }
+}
+```
+
+Y en `CardListItem.tsx`, pasamos el prop:
+
+```tsx
+{anchorRect &&
+  createPortal(
+    <CardTooltip card={card} anchorRect={anchorRect} preferRight />,
+    //                                               ^^^^^^^^^^^
+    //                                               activa la estrategia lista
+    document.body
+  )}
+```
+
+En `CardTile.tsx` no cambiamos nada — el tooltip de galería sigue usando la lógica original.
+
+#### Resultado visual comparado
+
+```
+ANTES (lista):
+┌────────────────────────────────────────────────────┐ viewport
+│[Tooltip x=8 ←────────────]  [resto del item ────] │
+│ Overlapping el item, a la izquierda                │
+└────────────────────────────────────────────────────┘
+
+DESPUÉS (lista):
+┌────────────────────────────────────────────────────┐ viewport
+│[   item content ──────────]        [Tooltip x=978] │
+│ Item visible. Tooltip a la derecha, sin overlap.   │
+└────────────────────────────────────────────────────┘
+```
+
+#### La lección: pasar contexto, no hackear algoritmos
+
+La tentación al ver este bug era agregar más condiciones al algoritmo existente:
+
+```typescript
+// ❌ Solución hackish: más condiciones en getPosition
+if (rect.width > window.innerWidth * 0.8) {
+  // probablemente es un item de lista...
+  left = window.innerWidth - TOOLTIP_W - 8
+}
+```
+
+Esto funciona, pero es frágil: depende de asumir un ratio de ancho para detectar el modo, y falla si el layout cambia. Es lo que se llama **"detección de contexto por inferencia"** — intentar adivinar el contexto a partir de datos indirectos.
+
+La solución correcta es **hacer el contexto explícito**. El componente padre (`CardTile` vs `CardListItem`) ya sabe en qué modo está. Le dice al tooltip directamente con `preferRight`. El tooltip no necesita adivinar nada.
+
+```
+CardListItem (sabe que está en lista)
+    → preferRight={true} → tooltip siempre a la derecha
+
+CardTile (sabe que está en galería)
+    → preferRight={false} (por defecto) → tooltip usa lógica auto
+```
+
+Este patrón aparece constantemente en interfaces complejas: **los datos de contexto fluyen hacia abajo por props**, y cada nivel solo se ocupa de lo que le corresponde. No hay magia implícita.
+
+---
+
 ## Próximo: Sprint 4 — Inventario por usuario
 
 En el siguiente sprint vamos a agregar persistencia real:

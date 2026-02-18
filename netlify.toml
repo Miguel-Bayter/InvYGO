@@ -1,0 +1,14 @@
+[build]
+  command = "npm run build"
+  publish = "apps/web/dist"
+
+[[redirects]]
+  from = "/ygo-api/*"
+  to = "https://ygo-api-wrapper-177404616225.us-central1.run.app/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

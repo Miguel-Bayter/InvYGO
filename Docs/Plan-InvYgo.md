@@ -25,7 +25,7 @@ Construir una aplicacion web para coleccionistas y jugadores de Yu-Gi-Oh! que pe
 - Buscar y explorar cartas consumiendo la API `GET /api/v1/cards` del wrapper provisto.
 - Visualizar coleccion en modo galeria (ilustraciones) y modo lista.
 - Crear decks desde catalogo global y comparar automaticamente contra inventario propio.
-- Ver faltantes por deck y facilitar adquisicion mediante enlaces a tiendas/marketplaces.
+- Ver faltantes mientras se arma el deck (integrado en Deck Builder) y facilitar adquisicion mediante enlaces a tiendas/marketplaces.
 
 Objetivo MVP: que cualquier usuario pueda pasar de "tengo cartas sueltas" a "tengo inventario estructurado y se exactamente que me falta para mi deck".
 
@@ -176,7 +176,7 @@ Motivo:
 - CardsCatalog
 - Inventory
 - Decks
-- MissingCards
+- DeckCoverage (faltantes integrados en Deck Builder)
 - MarketplaceRedirect
 
 ---
@@ -197,11 +197,12 @@ Motivo:
 - Agregar/remover carta y cantidad.
 - Reglas base de validacion por seccion.
 
-### 5.3 Modulo faltantes
+### 5.3 Faltantes integrados en deck builder
 
-- Comparar deck vs inventario.
+- Comparar deck vs inventario en tiempo real dentro del deck builder.
 - Mostrar faltante por carta: `max(0, cantidad_deck - cantidad_inventario)`.
 - Agrupar por prioridad (faltan mas copias primero).
+- No crear una pantalla separada de faltantes para el MVP.
 
 ### 5.4 Modulo compra
 
@@ -361,7 +362,7 @@ Checklist:
 - [ ] CRUD de decks por usuario.
 - [ ] Gestion de cartas por seccion (main/extra/side).
 - [ ] Calculo server-side de faltantes por deck.
-- [ ] UI de faltantes con prioridad y resumen.
+- [ ] UI de faltantes con prioridad y resumen integrada en Deck Builder (sin seccion aparte).
 - [ ] Indicador de cobertura del deck (porcentaje completado).
 - [ ] Tests de casos de uso de comparacion.
 
@@ -456,7 +457,7 @@ Un usuario autenticado puede:
 - Agregar y administrar inventario personal.
 - Ver cartas en galeria y lista.
 - Crear deck y cargar cartas por seccion.
-- Visualizar faltantes exactos vs inventario.
+- Visualizar faltantes exactos vs inventario dentro del Deck Builder.
 - Consultar precios por marketplace y redirigirse a compra.
 
 Y ademas:

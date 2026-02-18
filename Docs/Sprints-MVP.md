@@ -80,6 +80,7 @@ Checklist:
 - [x] Internacionalizacion (i18n): react-i18next, ES/EN, LanguageToggle en Navbar.
 - [x] Todo el texto hardcodeado en el codigo migrado a claves de traduccion.
 - [x] Tooltip de carta al hover: CardTooltip con createPortal, delay 300ms, posicionamiento inteligente.
+- [x] Fix posicionamiento tooltip en vista lista: prop `preferRight` → siempre aparece a la derecha.
 
 Entregables:
 
@@ -87,13 +88,15 @@ Entregables:
 - UI consistente con estilo moderno gamer. ✓
 - App bilingue ES/EN con selector de idioma en navbar. ✓
 - Hover sobre carta muestra panel con descripcion, stats y precio. ✓
+- Tooltip en lista siempre a la derecha sin tapar el contenido de la fila. ✓
 
 Definition of Done:
 
 - Filtros combinados devuelven resultados correctos y UX fluida. ✓
 - Archetype select poblado desde API. ✓
 - Cambio de idioma en runtime sin recarga. ✓
-- Tooltip visible en vista galeria y lista, posicionado sin salir del viewport. ✓
+- Tooltip en galeria: derecha del card (o izquierda si no cabe). ✓
+- Tooltip en lista: siempre borde derecho del viewport, alineado a la fila hover. ✓
 
 ---
 
@@ -119,47 +122,47 @@ Definition of Done:
 
 ---
 
-## Sprint 5 (2026-03-23 al 2026-03-27) - Deck Builder v1
+## Sprint 5 (2026-03-23 al 2026-03-27) - Deck Builder v1 + faltantes integrados
 
-Objetivo: crear decks y poblarlos con cartas del catalogo.
+Objetivo: crear decks, poblarlos con cartas y visualizar faltantes sin salir del builder.
 
 Checklist:
 
 - [ ] Crear/eliminar/renombrar deck.
 - [ ] Agregar cartas al deck por seccion (`main`, `extra`, `side`).
 - [ ] Editar cantidades dentro del deck.
-- [ ] Mostrar resumen por seccion.
+- [ ] Mostrar resumen por seccion + panel integrado de faltantes.
 - [ ] Persistir estado del deck.
 
 Entregables:
 
-- Deck builder usable end-to-end para un deck.
+- Deck builder usable end-to-end para un deck, con faltantes visibles en el mismo flujo.
 
 Definition of Done:
 
-- Usuario arma un deck completo y lo guarda.
+- Usuario arma un deck completo, ve faltantes en tiempo real y lo guarda.
 
 ---
 
-## Sprint 6 (2026-03-30 al 2026-04-03) - Comparador deck vs inventario
+## Sprint 6 (2026-03-30 al 2026-04-03) - Refinamiento de Deck Builder y cobertura
 
-Objetivo: calcular faltantes automaticamente.
+Objetivo: mejorar la experiencia del panel de cobertura/faltantes integrado en Deck Builder.
 
 Checklist:
 
-- [ ] Implementar calculo de faltantes por carta.
-- [ ] Vista "Missing Cards" con prioridades.
-- [ ] Indicador de porcentaje de completitud del deck.
-- [ ] Mensajes de estado (completo/parcial/incompleto).
-- [ ] Ajustes UX de lectura rapida.
+- [ ] Mejorar calculo y presentacion de faltantes por carta dentro del builder.
+- [ ] Mejorar orden/prioridades y densidad visual del panel integrado.
+- [ ] Ajustar indicador de porcentaje de completitud del deck.
+- [ ] Mensajes de estado (completo/parcial/incompleto) en contexto de armado.
+- [ ] Ajustes UX de lectura rapida y acciones rapidas de edicion.
 
 Entregables:
 
-- Dashboard de faltantes conectado a inventario.
+- Deck Builder refinado con cobertura/faltantes integrada y conectado a inventario.
 
 Definition of Done:
 
-- Se visualiza correctamente que cartas faltan y cuantas copias.
+- Se visualiza correctamente que cartas faltan y cuantas copias sin usar una seccion aparte.
 
 ---
 
@@ -212,7 +215,7 @@ Definition of Done:
 1. Buscar carta desde API externa.
 2. Agregar carta al inventario personal.
 3. Crear deck y cargar cartas.
-4. Ver faltantes exactos.
+4. Ver faltantes exactos dentro del Deck Builder.
 5. Abrir marketplace para comprar faltantes.
 
 ---
