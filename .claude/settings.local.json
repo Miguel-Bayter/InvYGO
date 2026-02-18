@@ -20,7 +20,11 @@
       "Bash(node -e:*)",
       "Bash(npx prettier:*)",
       "Bash(python3:*)",
-      "Bash(git -C \"C:\\\\Users\\\\mbayt\\\\Documents\\\\Proyectos\\\\InventoryYGO\" ls-files)"
+      "Bash(git -C \"C:\\\\Users\\\\mbayt\\\\Documents\\\\Proyectos\\\\InventoryYGO\" ls-files)",
+      "Bash(node_modules/.bin/tsc:*)",
+      "Bash(./node_modules/.bin/tsc:*)",
+      "Bash(node ./node_modules/typescript/bin/tsc:*)",
+      "Bash(tee:*)"
     ]
   }
 }
