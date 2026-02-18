@@ -25,10 +25,6 @@ export const router = createBrowserRouter([
         path: 'decks',
         element: <PlaceholderPage titleKey="router.deckBuilder" sprint="Sprint 5" />,
       },
-      {
-        path: 'missing',
-        element: <PlaceholderPage titleKey="router.missingCards" sprint="Sprint 6" />,
-      },
     ],
   },
 ])

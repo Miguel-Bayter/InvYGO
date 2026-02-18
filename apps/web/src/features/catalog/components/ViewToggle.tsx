@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import styles from './ViewToggle.module.css'
 
 export type ViewMode = 'gallery' | 'list'
@@ -8,13 +9,15 @@ interface Props {
 }
 
 export function ViewToggle({ view, onViewChange }: Props) {
+  const { t } = useTranslation()
+
   return (
-    <div className={styles.toggle} role="group" aria-label="View mode">
+    <div className={styles.toggle} role="group" aria-label={t('catalog.view.modeAriaLabel')}>
       <button
         className={[styles.btn, view === 'gallery' ? styles.active : ''].join(' ')}
         onClick={() => onViewChange('gallery')}
         aria-pressed={view === 'gallery'}
-        title="Gallery view"
+        title={t('catalog.view.galleryTitle')}
       >
         ⊞
       </button>
@@ -22,7 +25,7 @@ export function ViewToggle({ view, onViewChange }: Props) {
         className={[styles.btn, view === 'list' ? styles.active : ''].join(' ')}
         onClick={() => onViewChange('list')}
         aria-pressed={view === 'list'}
-        title="List view"
+        title={t('catalog.view.listTitle')}
       >
         ☰
       </button>

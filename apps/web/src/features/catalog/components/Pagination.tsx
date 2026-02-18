@@ -18,7 +18,7 @@ export function Pagination({ pagination, onPageChange, disabled = false }: Props
   const pages = buildPageRange(currentPage, totalPages)
 
   return (
-    <nav className={styles.nav} aria-label="Pagination">
+    <nav className={styles.nav} aria-label={t('pagination.ariaLabel')}>
       <span className={styles.info}>
         {t('pagination.showing', { from, to, total: totalItems })}
       </span>

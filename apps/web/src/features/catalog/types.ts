@@ -127,6 +127,8 @@ export interface CatalogFilters {
   def: string
   race: string
   archetype: string
+  frameType: string // client-side only — not sent to API
+  hideTokens: string // client-side only — 'true' | ''
 }
 
 // ─── Normalizer ───────────────────────────────────────────────────────────────

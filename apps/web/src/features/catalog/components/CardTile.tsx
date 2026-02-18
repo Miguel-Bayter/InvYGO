@@ -26,11 +26,14 @@ export function CardTile({ card }: Props) {
     }, HOVER_DELAY_MS)
   }
 
-  function handleMouseLeave() {
+  function handleMouseLeave(e: React.MouseEvent) {
     if (timerRef.current) {
       clearTimeout(timerRef.current)
       timerRef.current = null
     }
+    // Keep tooltip visible if mouse moved directly onto it
+    const related = e.relatedTarget as Element | null
+    if (related?.closest('[data-card-tooltip]')) return
     setAnchorRect(null)
   }
 
@@ -64,7 +67,10 @@ export function CardTile({ card }: Props) {
       </div>
 
       {anchorRect &&
-        createPortal(<CardTooltip card={card} anchorRect={anchorRect} />, document.body)}
+        createPortal(
+          <CardTooltip card={card} anchorRect={anchorRect} onClose={() => setAnchorRect(null)} />,
+          document.body
+        )}
     </article>
   )
 }

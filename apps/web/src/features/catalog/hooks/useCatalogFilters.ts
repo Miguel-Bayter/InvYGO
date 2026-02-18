@@ -9,6 +9,8 @@ const FILTER_KEYS: (keyof CatalogFilters)[] = [
   'def',
   'race',
   'archetype',
+  'frameType',
+  'hideTokens',
 ]
 
 export function useCatalogFilters() {
@@ -23,6 +25,8 @@ export function useCatalogFilters() {
     def: searchParams.get('def') ?? '',
     race: searchParams.get('race') ?? '',
     archetype: searchParams.get('archetype') ?? '',
+    frameType: searchParams.get('frameType') ?? '',
+    hideTokens: searchParams.get('hideTokens') ?? '',
   }
 
   const page = Number(searchParams.get('page') ?? '1')

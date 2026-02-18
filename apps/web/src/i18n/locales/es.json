@@ -2,8 +2,7 @@
   "nav": {
     "catalog": "Catálogo",
     "inventory": "Inventario",
-    "decks": "Decks",
-    "missing": "Faltantes"
+    "decks": "Deck Builder"
   },
   "home": {
     "subtitle": "Gestiona tu colección. Construye tus decks. Domina el meta.",
@@ -33,14 +32,25 @@
       "archetype": "Arquetipo",
       "atk": "ATK",
       "def": "DEF",
+      "atkPlaceholder": "ej. 2500 o ?",
+      "defPlaceholder": "ej. 2100 o ?",
       "all": "Todos",
       "loading": "Cargando...",
+      "frameType": "Tipo",
+      "frameTypeHint": "Tipo poco frecuente · usá búsqueda por nombre para mejores resultados",
+      "hideTokens": "Ocultar Tokens",
       "activeFilter_one": "{{count}} filtro activo",
       "activeFilter_other": "{{count}} filtros activos",
       "clearFilters": "Limpiar filtros"
+    },
+    "view": {
+      "modeAriaLabel": "Modo de vista",
+      "galleryTitle": "Vista galería",
+      "listTitle": "Vista lista"
     }
   },
   "pagination": {
+    "ariaLabel": "Paginación",
     "showing": "{{from}}–{{to}} de {{total, number}} cartas",
     "firstPage": "Primera página",
     "prevPage": "Página anterior",
@@ -75,7 +85,6 @@
   },
   "router": {
     "inventory": "Mi Inventario",
-    "deckBuilder": "Deck Builder",
-    "missingCards": "Cartas Faltantes"
+    "deckBuilder": "Deck Builder"
   }
 }

@@ -10,7 +10,6 @@ export function Navbar() {
     { to: '/catalog', label: t('nav.catalog') },
     { to: '/inventory', label: t('nav.inventory') },
     { to: '/decks', label: t('nav.decks') },
-    { to: '/missing', label: t('nav.missing') },
   ]
 
   return (

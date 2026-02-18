@@ -2,8 +2,7 @@
   "nav": {
     "catalog": "Catalog",
     "inventory": "Inventory",
-    "decks": "Decks",
-    "missing": "Missing Cards"
+    "decks": "Deck Builder"
   },
   "home": {
     "subtitle": "Manage your collection. Build your decks. Dominate the meta.",
@@ -33,14 +32,25 @@
       "archetype": "Archetype",
       "atk": "ATK",
       "def": "DEF",
+      "atkPlaceholder": "e.g. 2500 or ?",
+      "defPlaceholder": "e.g. 2100 or ?",
       "all": "All",
       "loading": "Loading...",
+      "frameType": "Type",
+      "frameTypeHint": "Rare type · use name search for best results",
+      "hideTokens": "Hide Tokens",
       "activeFilter_one": "{{count}} active filter",
       "activeFilter_other": "{{count}} active filters",
       "clearFilters": "Clear filters"
+    },
+    "view": {
+      "modeAriaLabel": "View mode",
+      "galleryTitle": "Gallery view",
+      "listTitle": "List view"
     }
   },
   "pagination": {
+    "ariaLabel": "Pagination",
     "showing": "{{from}}–{{to}} of {{total, number}} cards",
     "firstPage": "First page",
     "prevPage": "Previous page",
@@ -75,7 +85,6 @@
   },
   "router": {
     "inventory": "My Inventory",
-    "deckBuilder": "Deck Builder",
-    "missingCards": "Missing Cards"
+    "deckBuilder": "Deck Builder"
   }
 }

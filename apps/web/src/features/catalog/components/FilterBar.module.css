@@ -75,6 +75,47 @@
   -webkit-appearance: none;
 }
 
+/* ── Frame type hint ─────────────────────────── */
+.filterHint {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: rgba(19, 184, 255, 0.45);
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
+/* ── Hide Tokens toggle ───────────────────────── */
+.toggleRow {
+  padding-top: var(--space-2);
+  border-top: var(--border-hud);
+}
+
+.checkboxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-muted);
+  user-select: none;
+  transition: color var(--transition-fast);
+}
+
+.checkboxLabel:hover {
+  color: var(--color-white);
+}
+
+.checkbox {
+  accent-color: var(--color-cyan-hud);
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
 /* ── Actions ─────────────────────────────────── */
 .actions {
   display: flex;

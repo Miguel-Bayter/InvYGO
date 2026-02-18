@@ -1,19 +1,23 @@
+/* ── Tooltip shell ── */
+
 .tooltip {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   position: fixed;
   z-index: 9999;
-  width: 380px;
-  max-height: 520px;
-  overflow-y: auto;
+  width: 500px;
+  height: 356px;
 
-  background: rgba(4, 16, 28, 0.98);
-  border: 1px solid rgba(19, 184, 255, 0.35);
+  background: rgba(6, 18, 32, 0.98);
+  border: 1px solid rgba(19, 184, 255, 0.28);
   border-radius: var(--radius-md);
   box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.75),
-    0 0 24px rgba(19, 184, 255, 0.08),
-    inset 0 1px 0 rgba(19, 184, 255, 0.12);
+    0 28px 72px rgba(0, 0, 0, 0.82),
+    0 0 32px rgba(19, 184, 255, 0.06),
+    inset 0 1px 0 rgba(19, 184, 255, 0.1);
 
-  pointer-events: none;
+  overflow: hidden;
   animation: tooltipIn 0.14s ease;
 }
 
@@ -28,40 +32,44 @@
   }
 }
 
-/* ── Header ── */
+/* ── Main layout: image | content ── */
 
-.header {
+.layout {
   display: flex;
   gap: var(--space-3);
-  padding: var(--space-3);
-  border-bottom: 1px solid rgba(19, 184, 255, 0.1);
+  padding: var(--space-4);
 }
+
+/* ── Image column ── */
 
 .imageCol {
   flex-shrink: 0;
 }
 
 .image {
-  width: 90px;
-  height: 132px;
+  width: 108px;
+  height: 158px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 5px;
   display: block;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.55);
 }
 
 .imageFallback {
-  width: 90px;
-  height: 132px;
+  width: 108px;
+  height: 158px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(19, 184, 255, 0.06);
-  border-radius: 4px;
+  background: rgba(19, 184, 255, 0.05);
+  border-radius: 5px;
   font-size: 2rem;
-  color: rgba(19, 184, 255, 0.3);
+  color: rgba(19, 184, 255, 0.25);
 }
 
-.meta {
+/* ── Content column ── */
+
+.contentCol {
   flex: 1;
   min-width: 0;
   display: flex;
@@ -77,7 +85,7 @@
 }
 
 .name {
-  font-size: 0.92rem;
+  font-size: 0.96rem;
   font-weight: 700;
   color: #e8f4f8;
   line-height: 1.3;
@@ -87,110 +95,113 @@
 .badges {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: 10px;
   flex-shrink: 0;
 }
 
 .attribute {
-  font-size: 0.6rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
-  padding: 2px 6px;
-  border-radius: 3px;
-  color: rgba(0, 0, 0, 0.85);
-}
-
-.level {
-  font-size: 0.78rem;
-  color: #f1c40f;
-  font-weight: 700;
+  color: rgba(232, 244, 248, 0.92);
   white-space: nowrap;
 }
 
-.type {
-  font-size: 0.72rem;
-  color: rgba(232, 244, 248, 0.55);
-  font-style: italic;
+.attrIcon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.level {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.9rem;
+  color: #f1c40f;
+  font-weight: 700;
+  white-space: nowrap;
+  text-shadow: 0 0 4px rgba(241, 196, 15, 0.4);
+}
+
+.typeLine {
+  font-size: 0.9rem;
+  color: rgba(232, 244, 248, 0.9);
+  font-weight: 700;
   margin: 0;
 }
 
 .archetype {
-  font-size: 0.7rem;
-  color: rgba(19, 184, 255, 0.7);
+  font-size: 0.68rem;
+  color: rgba(19, 184, 255, 0.6);
   margin: 0;
 }
 
-/* ── Body ── */
+/* ── Description — scrollable ── */
 
-.body {
-  padding: var(--space-3);
+.descriptionWrap {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 152px;
+  padding-right: 6px;
+  /* prevent the scrollbar from pushing content */
+  margin-right: -6px;
 }
 
 .description {
-  font-size: 0.76rem;
-  color: rgba(232, 244, 248, 0.82);
-  line-height: 1.6;
+  font-size: 0.74rem;
+  color: rgba(232, 244, 248, 0.78);
+  line-height: 1.65;
   margin: 0;
   white-space: pre-line;
 }
 
-.divider {
-  height: 1px;
-  background: rgba(19, 184, 255, 0.1);
-  margin: var(--space-3) 0;
+.descriptionWrap::-webkit-scrollbar {
+  width: 3px;
+}
+
+.descriptionWrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.descriptionWrap::-webkit-scrollbar-thumb {
+  background: rgba(19, 184, 255, 0.3);
+  border-radius: 2px;
+}
+
+/* ── Footer: ATK/DEF + price ── */
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-4);
+  border-top: 1px solid rgba(19, 184, 255, 0.12);
+  background: rgba(0, 0, 0, 0.25);
+  min-height: 40px;
 }
 
 .stats {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-4);
 }
 
 .stat {
   font-family: var(--font-mono);
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  color: var(--color-cyan-hud);
+  color: #2ecc71;
   letter-spacing: 0.02em;
 }
 
-.stat + .stat {
-  border-left: 1px solid rgba(19, 184, 255, 0.25);
-  padding-left: var(--space-3);
-}
-
-.priceRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.priceLabel {
-  font-size: 0.68rem;
-  color: rgba(232, 244, 248, 0.4);
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-}
-
-.priceValue {
+.price {
   font-family: var(--font-mono);
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: #2ecc71;
-}
-
-/* ── Scrollbar style to match theme ── */
-
-.tooltip::-webkit-scrollbar {
-  width: 4px;
-}
-
-.tooltip::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.tooltip::-webkit-scrollbar-thumb {
-  background: rgba(19, 184, 255, 0.25);
-  border-radius: 2px;
+  font-size: 0.78rem;
+  color: rgba(232, 244, 248, 0.45);
+  letter-spacing: 0.02em;
 }

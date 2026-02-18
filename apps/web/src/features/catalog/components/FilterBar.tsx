@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ATTRIBUTES, ALL_RACES, LEVELS } from '../constants'
+import { ATTRIBUTES, ALL_RACES, LEVELS, FRAME_TYPES, RARE_FRAME_TYPES } from '../constants'
 import type { CatalogFilters } from '../types'
 import styles from './FilterBar.module.css'
 
@@ -96,15 +96,35 @@ export function FilterBar({
           </select>
         </div>
 
+        {/* Frame Type */}
+        <div className={styles.field}>
+          <label className={styles.label}>{t('catalog.filters.frameType')}</label>
+          <select
+            className={styles.select}
+            value={filters.frameType}
+            onChange={e => onFilterChange('frameType', e.target.value)}
+          >
+            <option value="">{t('catalog.filters.all')}</option>
+            {FRAME_TYPES.map(ft => (
+              <option key={ft.value} value={ft.value}>
+                {ft.label}
+              </option>
+            ))}
+          </select>
+          {filters.frameType && RARE_FRAME_TYPES.has(filters.frameType) && (
+            <span className={styles.filterHint}>{t('catalog.filters.frameTypeHint')}</span>
+          )}
+        </div>
+
         {/* ATK */}
         <div className={styles.field}>
           <label className={styles.label}>{t('catalog.filters.atk')}</label>
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
             className={styles.input}
-            placeholder="e.g. 2500"
-            min={0}
-            max={9999}
+            placeholder={t('catalog.filters.atkPlaceholder')}
+            maxLength={5}
             value={filters.atk}
             onChange={e => onFilterChange('atk', e.target.value)}
           />
@@ -114,15 +134,28 @@ export function FilterBar({
         <div className={styles.field}>
           <label className={styles.label}>{t('catalog.filters.def')}</label>
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
             className={styles.input}
-            placeholder="e.g. 2100"
-            min={0}
-            max={9999}
+            placeholder={t('catalog.filters.defPlaceholder')}
+            maxLength={5}
             value={filters.def}
             onChange={e => onFilterChange('def', e.target.value)}
           />
         </div>
+      </div>
+
+      {/* Hide Tokens toggle */}
+      <div className={styles.toggleRow}>
+        <label className={styles.checkboxLabel}>
+          <input
+            type="checkbox"
+            className={styles.checkbox}
+            checked={filters.hideTokens === 'true'}
+            onChange={e => onFilterChange('hideTokens', e.target.checked ? 'true' : '')}
+          />
+          {t('catalog.filters.hideTokens')}
+        </label>
       </div>
 
       {activeFiltersCount > 0 && (

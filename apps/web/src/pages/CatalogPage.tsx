@@ -43,6 +43,8 @@ export function CatalogPage() {
 
   const isBusy = isFetching || isDebouncing
 
+  const visibleCards = data?.cards ?? []
+
   return (
     <div className={styles.page}>
       {/* ── Top bar: title + search + view toggle ── */}
@@ -93,7 +95,7 @@ export function CatalogPage() {
             }
             onRetry={() => void refetch()}
           />
-        ) : data && data.cards.length === 0 ? (
+        ) : data && visibleCards.length === 0 ? (
           <EmptyState
             title={t('ui.empty.title')}
             description={hasActiveFilters ? t('ui.empty.withFilters') : t('ui.empty.withSearch')}
@@ -101,9 +103,9 @@ export function CatalogPage() {
         ) : data ? (
           <>
             {view === 'gallery' ? (
-              <CardGrid cards={data.cards} isFetching={isFetching} />
+              <CardGrid cards={visibleCards} isFetching={isFetching} />
             ) : (
-              <CardListView cards={data.cards} isFetching={isFetching} />
+              <CardListView cards={visibleCards} isFetching={isFetching} />
             )}
             {data.pagination.totalPages > 1 && (
               <Pagination

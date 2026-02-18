@@ -51,6 +51,10 @@ export const ATTRIBUTE_COLOR: Record<string, string> = {
   DIVINE: '#e67e22',
 }
 
+// Frame types that rarely appear in default API pagination.
+// When selected, we fetch 100 cards instead of 20 to give the client filter more to work with.
+export const RARE_FRAME_TYPES = new Set(['ritual', 'fusion', 'synchro', 'xyz', 'link'])
+
 export const FRAME_TYPES = [
   { value: 'normal', label: 'Normal' },
   { value: 'effect', label: 'Effect' },
