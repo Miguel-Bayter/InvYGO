@@ -86,5 +86,37 @@
   "router": {
     "inventory": "My Inventory",
     "deckBuilder": "Deck Builder"
+  },
+  "inventory": {
+    "title": "My Inventory",
+    "statsUnique": "{{count}} unique cards",
+    "statsTotal": "{{count}} total copies",
+    "search": "Search in inventory...",
+    "empty": {
+      "title": "Empty inventory",
+      "desc": "Add cards from the catalog."
+    },
+    "modal": {
+      "add": "Add to Inventory",
+      "update": "Update",
+      "remove": "Remove",
+      "quantity": "Quantity",
+      "condition": "Condition",
+      "edition": "Edition",
+      "cancel": "Cancel"
+    },
+    "conditions": {
+      "mint": "Mint",
+      "near-mint": "Near Mint",
+      "excellent": "Excellent",
+      "good": "Good",
+      "light-played": "Light Played",
+      "played": "Played",
+      "poor": "Poor"
+    },
+    "editions": {
+      "first": "First Edition",
+      "unlimited": "Unlimited"
+    }
   }
 }

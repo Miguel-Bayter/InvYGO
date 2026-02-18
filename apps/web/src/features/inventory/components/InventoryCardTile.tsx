@@ -1,27 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import type { Card } from '../types'
-import { CardTooltip } from './CardTooltip'
-import { AddToInventoryModal } from '../../inventory/components/AddToInventoryModal'
-import { useInventory } from '../../inventory/context'
-import styles from './CardTile.module.css'
+import type { InventoryItem } from '../types'
+import { CardTooltip } from '../../catalog/components/CardTooltip'
+import { AddToInventoryModal } from './AddToInventoryModal'
+import styles from './InventoryCardTile.module.css'
 
 interface Props {
-  card: Card
+  item: InventoryItem
 }
 
 const HOVER_DELAY_MS = 300
 
-export function CardTile({ card }: Props) {
+export function InventoryCardTile({ item }: Props) {
   const [imgError, setImgError] = useState(false)
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
   const [showModal, setShowModal] = useState(false)
   const articleRef = useRef<HTMLElement>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const { getItem } = useInventory()
 
-  const image = card.images[0]
-  const inInventory = !!getItem(card.id)
+  const image = item.card.images[0]
 
   function handleMouseEnter() {
     timerRef.current = setTimeout(() => {
@@ -36,14 +33,12 @@ export function CardTile({ card }: Props) {
       clearTimeout(timerRef.current)
       timerRef.current = null
     }
-    // Keep tooltip visible if mouse moved directly onto it
     const related = e.relatedTarget as Element | null
     if (related?.closest('[data-card-tooltip]')) return
     setAnchorRect(null)
   }
 
-  function handleAddClick(e: React.MouseEvent) {
-    e.stopPropagation()
+  function handleClick() {
     setAnchorRect(null)
     setShowModal(true)
   }
@@ -59,6 +54,7 @@ export function CardTile({ card }: Props) {
       <article
         ref={articleRef}
         className={styles.tile}
+        onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -66,7 +62,7 @@ export function CardTile({ card }: Props) {
           {image && !imgError ? (
             <img
               src={image.imageUrlSmall}
-              alt={card.name}
+              alt={item.card.name}
               className={styles.image}
               loading="lazy"
               onError={() => setImgError(true)}
@@ -76,24 +72,22 @@ export function CardTile({ card }: Props) {
               <span>⬡</span>
             </div>
           )}
-          <button
-            className={`${styles.addBtn} ${inInventory ? styles.addBtnActive : ''}`}
-            onClick={handleAddClick}
-            aria-label="Add to inventory"
-          >
-            {inInventory ? '✓' : '+'}
-          </button>
+          <span className={styles.badge}>{item.quantity}</span>
         </div>
 
         {anchorRect &&
           createPortal(
-            <CardTooltip card={card} anchorRect={anchorRect} onClose={() => setAnchorRect(null)} />,
+            <CardTooltip
+              card={item.card}
+              anchorRect={anchorRect}
+              onClose={() => setAnchorRect(null)}
+            />,
             document.body
           )}
       </article>
 
       {showModal && (
-        <AddToInventoryModal card={card} onClose={() => setShowModal(false)} />
+        <AddToInventoryModal card={item.card} onClose={() => setShowModal(false)} />
       )}
     </>
   )

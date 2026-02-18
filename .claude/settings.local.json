@@ -19,7 +19,8 @@
       "Bash(echo:*)",
       "Bash(node -e:*)",
       "Bash(npx prettier:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(git -C \"C:\\\\Users\\\\mbayt\\\\Documents\\\\Proyectos\\\\InventoryYGO\" ls-files)"
     ]
   }
 }

@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import { AppLayout } from './components/layout/AppLayout'
 import { HomePage } from './pages/HomePage'
 import { CatalogPage } from './pages/CatalogPage'
+import { InventoryPage } from './pages/InventoryPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 
 export const router = createBrowserRouter([
@@ -19,7 +20,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'inventory',
-        element: <PlaceholderPage titleKey="router.inventory" sprint="Sprint 4" />,
+        element: <InventoryPage />,
       },
       {
         path: 'decks',

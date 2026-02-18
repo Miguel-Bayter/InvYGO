@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom'
 import type { Card } from '../types'
 import { ATTRIBUTE_COLOR } from '../constants'
 import { CardTooltip } from './CardTooltip'
+import { AddToInventoryModal } from '../../inventory/components/AddToInventoryModal'
+import { useInventory } from '../../inventory/context'
 import styles from './CardListItem.module.css'
 
 interface Props {
@@ -14,11 +16,14 @@ const HOVER_DELAY_MS = 300
 export function CardListItem({ card }: Props) {
   const [imgError, setImgError] = useState(false)
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
+  const [showModal, setShowModal] = useState(false)
   const articleRef = useRef<HTMLElement>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const { getItem } = useInventory()
 
   const image = card.images[0]
   const attrColor = card.attribute ? (ATTRIBUTE_COLOR[card.attribute] ?? '#7a8fa0') : undefined
+  const inInventory = !!getItem(card.id)
 
   function handleMouseEnter() {
     timerRef.current = setTimeout(() => {
@@ -39,6 +44,12 @@ export function CardListItem({ card }: Props) {
     setAnchorRect(null)
   }
 
+  function handleAddClick(e: React.MouseEvent) {
+    e.stopPropagation()
+    setAnchorRect(null)
+    setShowModal(true)
+  }
+
   useEffect(() => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
@@ -46,60 +57,74 @@ export function CardListItem({ card }: Props) {
   }, [])
 
   return (
-    <article
-      ref={articleRef}
-      className={styles.item}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      {/* Thumbnail */}
-      <div className={styles.thumb}>
-        {image && !imgError ? (
-          <img
-            src={image.imageUrlSmall}
-            alt={card.name}
-            className={styles.img}
-            loading="lazy"
-            onError={() => setImgError(true)}
-          />
-        ) : (
-          <div className={styles.imgFallback}>⬡</div>
+    <>
+      <article
+        ref={articleRef}
+        className={styles.item}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {/* Thumbnail */}
+        <div className={styles.thumb}>
+          {image && !imgError ? (
+            <img
+              src={image.imageUrlSmall}
+              alt={card.name}
+              className={styles.img}
+              loading="lazy"
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <div className={styles.imgFallback}>⬡</div>
+          )}
+        </div>
+
+        {/* Name + type */}
+        <div className={styles.main}>
+          <p className={styles.name}>{card.name}</p>
+          <p className={styles.type}>
+            {card.type} — {card.race}
+            {card.archetype && <span className={styles.archetype}> · {card.archetype}</span>}
+          </p>
+        </div>
+
+        {/* Stats */}
+        <div className={styles.stats}>
+          {card.level !== undefined && <span className={styles.stat}>Lv.{card.level}</span>}
+          {card.attack !== undefined && <span className={styles.stat}>ATK {card.attack}</span>}
+          {card.defense !== undefined && <span className={styles.stat}>DEF {card.defense}</span>}
+        </div>
+
+        {/* Attribute badge */}
+        {card.attribute && (
+          <span className={styles.attr} style={{ background: attrColor }}>
+            {card.attribute}
+          </span>
         )}
-      </div>
 
-      {/* Name + type */}
-      <div className={styles.main}>
-        <p className={styles.name}>{card.name}</p>
-        <p className={styles.type}>
-          {card.type} — {card.race}
-          {card.archetype && <span className={styles.archetype}> · {card.archetype}</span>}
-        </p>
-      </div>
+        {/* Add to inventory */}
+        <button
+          className={`${styles.addBtn} ${inInventory ? styles.addBtnActive : ''}`}
+          onClick={handleAddClick}
+          aria-label="Add to inventory"
+        >
+          {inInventory ? '✓' : '+'}
+        </button>
 
-      {/* Stats */}
-      <div className={styles.stats}>
-        {card.level !== undefined && <span className={styles.stat}>Lv.{card.level}</span>}
-        {card.attack !== undefined && <span className={styles.stat}>ATK {card.attack}</span>}
-        {card.defense !== undefined && <span className={styles.stat}>DEF {card.defense}</span>}
-      </div>
+        {anchorRect &&
+          createPortal(
+            <CardTooltip
+              card={card}
+              anchorRect={anchorRect}
+              onClose={() => setAnchorRect(null)}
+            />,
+            document.body
+          )}
+      </article>
 
-      {/* Attribute badge */}
-      {card.attribute && (
-        <span className={styles.attr} style={{ background: attrColor }}>
-          {card.attribute}
-        </span>
+      {showModal && (
+        <AddToInventoryModal card={card} onClose={() => setShowModal(false)} />
       )}
-
-      {anchorRect &&
-        createPortal(
-          <CardTooltip
-            card={card}
-            anchorRect={anchorRect}
-            preferRight
-            onClose={() => setAnchorRect(null)}
-          />,
-          document.body
-        )}
-    </article>
+    </>
   )
 }

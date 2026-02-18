@@ -1,0 +1,84 @@
+.page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--space-6, 1.5rem) var(--space-4, 1rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5, 1.25rem);
+}
+
+/* ── Header ──────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4, 1rem);
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-white);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-cyan-hud);
+}
+
+.statsDivider {
+  color: var(--color-muted);
+}
+
+/* ── Search ──────────────────────────────────── */
+.searchWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.searchInput {
+  width: 100%;
+  background: var(--surface-panel);
+  border: var(--border-hud);
+  border-radius: var(--radius-sm);
+  color: var(--color-white);
+  font-size: 0.875rem;
+  padding: 10px 36px 10px 14px;
+  transition: border-color var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.searchInput::placeholder {
+  color: var(--color-muted);
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--color-cyan-hud);
+}
+
+.clearBtn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 2px 4px;
+  transition: color var(--transition-fast);
+}
+
+.clearBtn:hover {
+  color: var(--color-white);
+}
