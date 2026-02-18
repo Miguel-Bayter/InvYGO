@@ -65,6 +65,11 @@
       "default": "No se encontraron cartas para la búsqueda actual."
     }
   },
+  "cardTooltip": {
+    "archetype": "Arquetipo",
+    "marketPrice": "Precio de mercado",
+    "noPrice": "Sin datos de precio"
+  },
   "placeholder": {
     "comingSoon": "Esta sección estará disponible próximamente."
   },

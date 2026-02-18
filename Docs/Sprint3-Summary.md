@@ -1,12 +1,13 @@
-# Sprint 3 — Filtros avanzados, UX gamer e i18n
+# Sprint 3 — Filtros avanzados, UX gamer, i18n y Card Tooltip
 
 ## Qué se construyó
 
-Sprint 3 tuvo tres ejes:
+Sprint 3 tuvo cuatro ejes:
 
-1. **Filtros avanzados**: six filtros simultáneos (attribute, race, level, archetype, atk, def) con archetype consumido desde la API real como dropdown.
+1. **Filtros avanzados**: 6 filtros simultáneos (attribute, race, level, archetype, atk, def) con archetype consumido desde la API real como dropdown.
 2. **UX gamer**: FilterBar estilo HUD, vista galería/lista intercambiable, debounce, cancelación de requests, persistencia de estado en URL.
 3. **Internacionalización (i18n)**: toda la app traducida a ES/EN con selector de idioma persistido en localStorage.
+4. **Card Tooltip**: panel flotante al hover con imagen, descripción completa, stats y precio.
 
 ---
 
@@ -30,6 +31,8 @@ Sprint 3 tuvo tres ejes:
 | `src/i18n/locales/es.json` | Traducciones español |
 | `src/components/layout/LanguageToggle.tsx` | Botón ES/EN en navbar |
 | `src/components/layout/LanguageToggle.module.css` | Estilo del botón |
+| `src/features/catalog/components/CardTooltip.tsx` | Panel flotante al hover con info completa |
+| `src/features/catalog/components/CardTooltip.module.css` | Estilos del panel (HUD, glassmorphism dark) |
 
 ### Modificados
 | Archivo | Cambio principal |
@@ -37,7 +40,10 @@ Sprint 3 tuvo tres ejes:
 | `src/features/catalog/types.ts` | Agregado CatalogFilters, RawArchetypesResponse |
 | `src/features/catalog/api.ts` | Agregado fetchArchetypes(), AbortSignal en fetchCards() |
 | `src/features/catalog/hooks/useCards.ts` | Debounce por tipo de input, archetype sin debounce |
+| `src/features/catalog/constants.ts` | Exportado ATTRIBUTE_COLOR (centralizado, antes duplicado) |
 | `src/features/catalog/components/FilterBar.tsx` | i18n + archetype como select |
+| `src/features/catalog/components/CardTile.tsx` | Hover handlers + createPortal → CardTooltip |
+| `src/features/catalog/components/CardListItem.tsx` | Hover handlers + createPortal → CardTooltip |
 | `src/features/catalog/components/SearchBar.tsx` | i18n |
 | `src/features/catalog/components/Pagination.tsx` | i18n |
 | `src/pages/CatalogPage.tsx` | Conecta todos los nuevos hooks y componentes, i18n |
@@ -85,6 +91,16 @@ npm run dev
 
 **Cancellation**
 - [ ] Escribir rápido y cambiar el texto → en Network tab, los requests anteriores deben aparecer como "cancelled"
+
+**Card Tooltip**
+- [ ] Colocar el cursor sobre una carta en vista galería y esperar → debe aparecer panel flotante después de ~300ms
+- [ ] El panel muestra: imagen, nombre, atributo + nivel, [raza / tipo], descripción completa, ATK/DEF, precio
+- [ ] Mover el cursor fuera de la carta → el panel desaparece inmediatamente
+- [ ] Pasar el cursor rápido por varias cartas → el panel no debe parpadear (delay de 300ms lo evita)
+- [ ] Hover en carta en el borde DERECHO del viewport → el panel debe aparecer a la IZQUIERDA de la carta
+- [ ] Hover en carta en el borde IZQUIERDO del viewport → el panel debe aparecer a la DERECHA
+- [ ] Hover en carta en vista lista → funciona igual que en galería
+- [ ] Cambiar idioma a EN → labels del tooltip en inglés ("Market Price", "Archetype")
 
 **Vista galería/lista**
 - [ ] Hacer click en el ícono ⊞ → vista galería (tarjetas)
@@ -631,8 +647,9 @@ features/catalog/
     ├── FilterBar             ← HUD de filtros
     ├── SearchBar             ← buscador con debounce visual
     ├── ViewToggle            ← galería/lista
-    ├── CardGrid + CardTile   ← vista galería
-    ├── CardListView + CardListItem ← vista lista
+    ├── CardGrid + CardTile   ← vista galería (con tooltip)
+    ├── CardListView + CardListItem ← vista lista (con tooltip)
+    ├── CardTooltip           ← panel flotante al hover (portal → body)
     └── Pagination            ← paginación con ellipsis
 ```
 
@@ -651,6 +668,347 @@ FilterBar, CardGrid/CardListView, Pagination (presentadores)
 ```
 
 Ningún componente presentador conoce la URL ni el fetch. Solo recibe datos y dispara callbacks. Eso hace que sean testeables y reutilizables.
+
+---
+
+### 10. Card Tooltip: portals, hover con delay y posicionamiento inteligente
+
+#### El problema que resuelve
+
+En una grilla de tarjetas pequeñas, la imagen y el nombre se ven bien, pero la descripción del efecto (que puede tener 200 palabras) no cabe. La solución estándar en apps de TCG es un **panel flotante al hover** que muestra toda la información sin cambiar de página.
+
+El desafío técnico está en tres lugares:
+1. **El tooltip no puede quedar recortado** por el contenedor de la grilla (que tiene `overflow: hidden`)
+2. **No debe parpadear** cuando el cursor pasa rápido entre cartas
+3. **No debe salir del viewport** en cartas en los bordes de la pantalla
+
+#### Problema 1: `createPortal` — renderizar fuera del árbol DOM
+
+##### Contexto del problema
+
+En React, cada componente renderiza dentro de su árbol DOM padre. Un tooltip dentro de `CardTile` quedaría dentro del `<article>` de la carta, que a su vez está dentro del `<div>` de la grilla. Si la grilla tiene `overflow: hidden`, el tooltip aparece cortado.
+
+```
+<body>
+  <div id="root">
+    <div class="catalog-grid">        ← overflow: hidden aquí
+      <article class="card-tile">
+        <div class="tooltip"> ←←← queda cortado por el padre
+        </div>
+      </article>
+    </div>
+  </div>
+</body>
+```
+
+La solución: renderizar el tooltip **directamente en `<body>`**, fuera de toda esa jerarquía.
+
+##### Qué es `createPortal`
+
+`createPortal` es una función de React que permite renderizar JSX en un nodo DOM diferente al del componente padre, **pero manteniéndolo en el árbol de React**. Esto significa que los eventos de React, el contexto y el estado siguen funcionando normalmente.
+
+```typescript
+import { createPortal } from 'react-dom'
+
+// Esto renderiza el tooltip en document.body,
+// aunque este código esté dentro de CardTile
+createPortal(<CardTooltip card={card} />, document.body)
+```
+
+Resultado en el DOM real:
+```
+<body>
+  <div id="root">
+    <div class="catalog-grid">
+      <article class="card-tile">  ← el componente vive aquí en React
+      </article>
+    </div>
+  </div>
+  <div class="tooltip">  ←←← pero el DOM aparece aquí, libre de clipping
+  </div>
+</body>
+```
+
+##### Cuándo usar `createPortal`
+
+| Caso de uso | Por qué necesita portal |
+|---|---|
+| Tooltips | El padre puede tener `overflow: hidden` |
+| Modales | Deben estar encima de TODO el contenido |
+| Dropdowns complejos | Pueden quedar cortados por contenedores |
+| Notificaciones / toasts | Siempre en la esquina de la pantalla |
+
+##### La implementación en CardTile
+
+```typescript
+import { createPortal } from 'react-dom'
+import { CardTooltip } from './CardTooltip'
+
+export function CardTile({ card }) {
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
+
+  return (
+    <article>
+      {/* contenido normal de la carta */}
+
+      {/* El portal: solo se renderiza cuando anchorRect no es null */}
+      {anchorRect && createPortal(
+        <CardTooltip card={card} anchorRect={anchorRect} />,
+        document.body   // ← nodo DOM destino
+      )}
+    </article>
+  )
+}
+```
+
+`anchorRect` es el rectángulo de la carta en el viewport (obtenido con `getBoundingClientRect()`). Cuando es `null`, el portal no existe. Cuando el usuario hace hover, se calcula el rect y el portal aparece.
+
+---
+
+#### Problema 2: Hover con delay — `setTimeout` como guardia de parpadeo
+
+##### El problema del parpadeo
+
+Sin delay, si el usuario mueve el cursor de carta a carta rápidamente:
+
+```
+onMouseEnter carta A → tooltip aparece
+onMouseLeave carta A → tooltip desaparece
+onMouseEnter carta B → tooltip aparece
+onMouseLeave carta B → tooltip desaparece
+...
+```
+
+El resultado: la pantalla parpadea con tooltips que aparecen y desaparecen en milisegundos. Horrible.
+
+##### La solución: retrasar el `onMouseEnter`
+
+```typescript
+const HOVER_DELAY_MS = 300
+
+const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+const articleRef = useRef<HTMLElement>(null)
+
+function handleMouseEnter() {
+  // En vez de mostrar inmediatamente, esperamos 300ms
+  timerRef.current = setTimeout(() => {
+    if (articleRef.current) {
+      setAnchorRect(articleRef.current.getBoundingClientRect())
+    }
+  }, HOVER_DELAY_MS)
+}
+
+function handleMouseLeave() {
+  // Si el usuario se fue antes de los 300ms, cancelamos el timer
+  if (timerRef.current) {
+    clearTimeout(timerRef.current)
+    timerRef.current = null
+  }
+  setAnchorRect(null)  // ocultamos el tooltip si estaba visible
+}
+```
+
+Ahora:
+```
+onMouseEnter carta A → empieza timer de 300ms
+onMouseLeave carta A → cancela el timer (antes de los 300ms)
+onMouseEnter carta B → empieza timer de 300ms
+... [300ms de silencio] ...
+→ tooltip aparece para carta B
+```
+
+Sin parpadeo.
+
+##### Por qué `useRef` y no `useState` para el timer
+
+El ID del timer (`timerRef.current`) no es parte del estado visible de la UI. No necesitamos que React re-renderice cuando cambia. `useRef` guarda un valor mutable que persiste entre renders sin causar re-renders.
+
+```typescript
+// ❌ INCORRECTO: causa re-renders innecesarios
+const [timerId, setTimerId] = useState<number | null>(null)
+
+// ✓ CORRECTO: mutable, persistente, no causa re-renders
+const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+```
+
+##### El cleanup en `useEffect`
+
+¿Qué pasa si el componente se desmonta mientras el timer está corriendo (por ejemplo, la carta sale de la pantalla al paginar)?
+
+```typescript
+useEffect(() => {
+  return () => {
+    // Esta función se ejecuta cuando el componente se desmonta
+    if (timerRef.current) clearTimeout(timerRef.current)
+  }
+}, [])
+```
+
+Sin esto, el timer seguiría corriendo después de que la carta ya no existe, intentando actualizar el estado de un componente desmontado — React tiraría un warning.
+
+**Regla general:** Si en un `useEffect` creás algo asíncrono (timers, subscripciones, event listeners), siempre limpialo en el `return` del efecto.
+
+---
+
+#### Problema 3: Posicionamiento inteligente con `position: fixed`
+
+##### Por qué `position: fixed` y no `position: absolute`
+
+- `position: absolute`: relativo al ancestro más cercano con `position: relative`. Si la grilla tiene scroll, el tooltip se desplaza con ella y puede quedar fuera del viewport.
+- `position: fixed`: relativo al viewport. No importa cuánto hayas scrolleado, el tooltip siempre aparece en la posición correcta de la pantalla.
+
+##### `getBoundingClientRect()` — la clave del posicionamiento
+
+```typescript
+const rect = element.getBoundingClientRect()
+// rect.top    → distancia del borde superior del elemento al borde superior del viewport
+// rect.left   → distancia del borde izquierdo al borde izquierdo del viewport
+// rect.right  → distancia del borde derecho al borde izquierdo del viewport
+// rect.bottom → distancia del borde inferior al borde superior del viewport
+// rect.width  → ancho del elemento
+// rect.height → alto del elemento
+```
+
+Estas coordenadas son exactamente las que necesita `position: fixed` para posicionar el tooltip.
+
+##### El algoritmo de posicionamiento
+
+```typescript
+const TOOLTIP_W = 380   // ancho del tooltip en px
+const TOOLTIP_MAX_H = 520
+const GAP = 14          // espacio entre carta y tooltip
+
+function getPosition(rect: DOMRect) {
+  // ¿Cuánto espacio hay a la derecha de la carta?
+  const spaceRight = window.innerWidth - rect.right - GAP
+
+  const left = spaceRight >= TOOLTIP_W
+    ? rect.right + GAP          // hay espacio → aparece a la derecha
+    : Math.max(8, rect.left - TOOLTIP_W - GAP)  // no hay espacio → a la izquierda
+
+  // Alinear con el borde superior de la carta,
+  // pero sin salir del viewport por abajo
+  const top = Math.max(
+    8,                                            // no subir del borde superior
+    Math.min(rect.top, window.innerHeight - TOOLTIP_MAX_H - 8)  // no bajar del borde inferior
+  )
+
+  return { left, top }
+}
+```
+
+Visualización:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  viewport                                               │
+│                                                         │
+│  [Tooltip]  [Carta]     spaceRight >= 380px             │
+│                                                         │
+│             [Carta]  [Tooltip]   spaceRight < 380px     │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+##### `pointer-events: none` — el tooltip invisible para el mouse
+
+```css
+.tooltip {
+  pointer-events: none;
+}
+```
+
+Sin esto: el cursor pasa de la carta al tooltip, dispara `onMouseLeave` en la carta, el tooltip desaparece.
+
+Con `pointer-events: none`: el tooltip no intercepta eventos de mouse. El cursor "pasa a través" de él. Desde el punto de vista del browser, el cursor sigue sobre la carta aunque visualmente esté sobre el tooltip.
+
+---
+
+#### La animación de entrada
+
+```css
+.tooltip {
+  animation: tooltipIn 0.14s ease;
+}
+
+@keyframes tooltipIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+```
+
+Un fade-in con ligero scale y desplazamiento vertical. Duración de 140ms — suficiente para percibirse como suave sin sentirse lento. Los tooltips deben aparecer rápido; una animación de más de 200ms se siente pesada.
+
+---
+
+#### El patrón DRY: centralizar ATTRIBUTE_COLOR en `constants.ts`
+
+Antes del sprint, `ATTRIBUTE_COLOR` estaba duplicado en `CardTile.tsx` y `CardListItem.tsx`. Al crear `CardTooltip` también lo necesitaba — ya serían 3 copias.
+
+```typescript
+// constants.ts — fuente única de verdad
+export const ATTRIBUTE_COLOR: Record<string, string> = {
+  DARK: '#9b59b6',
+  LIGHT: '#f1c40f',
+  EARTH: '#a67c52',
+  WATER: '#3498db',
+  FIRE: '#e74c3c',
+  WIND: '#2ecc71',
+  DIVINE: '#e67e22',
+}
+```
+
+Ahora los 3 componentes importan de un solo lugar:
+
+```typescript
+import { ATTRIBUTE_COLOR } from '../constants'
+```
+
+**Regla DRY (Don't Repeat Yourself):** si un mismo dato aparece en 3 o más lugares, ya es hora de centralizarlo. Con 2 copias puedes discutirlo; con 3, es definitivamente un problema de mantenimiento.
+
+---
+
+#### El flujo completo de un hover
+
+```
+[Usuario mueve cursor sobre CardTile]
+         ↓
+  onMouseEnter dispara
+         ↓
+  setTimeout(300ms) empieza
+         ↓
+  [¿Usuario se fue antes de 300ms?]
+  SÍ → clearTimeout → fin
+  NO ↓
+         ↓
+  getBoundingClientRect() → DOMRect { top, left, right, ... }
+         ↓
+  setAnchorRect(rect) → React re-renderiza CardTile
+         ↓
+  createPortal(<CardTooltip anchorRect={rect} />, document.body)
+         ↓
+  CardTooltip calcula left/top con getPosition(rect)
+         ↓
+  Tooltip se monta en <body> con position: fixed
+         ↓
+  CSS animation: fade in 140ms
+
+[Usuario saca el cursor]
+         ↓
+  onMouseLeave dispara
+         ↓
+  setAnchorRect(null) → anchorRect === null
+         ↓
+  createPortal no se ejecuta → portal se desmonta
+         ↓
+  Tooltip desaparece del DOM
+```
 
 ---
 

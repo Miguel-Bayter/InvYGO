@@ -79,18 +79,21 @@ Checklist:
 - [x] Filtro de arquetipo como dropdown usando `/api/v1/archetypes` (useArchetypes hook).
 - [x] Internacionalizacion (i18n): react-i18next, ES/EN, LanguageToggle en Navbar.
 - [x] Todo el texto hardcodeado en el codigo migrado a claves de traduccion.
+- [x] Tooltip de carta al hover: CardTooltip con createPortal, delay 300ms, posicionamiento inteligente.
 
 Entregables:
 
 - Busqueda avanzada utilizable para construccion de inventario/deck. ✓
 - UI consistente con estilo moderno gamer. ✓
 - App bilingue ES/EN con selector de idioma en navbar. ✓
+- Hover sobre carta muestra panel con descripcion, stats y precio. ✓
 
 Definition of Done:
 
 - Filtros combinados devuelven resultados correctos y UX fluida. ✓
 - Archetype select poblado desde API. ✓
 - Cambio de idioma en runtime sin recarga. ✓
+- Tooltip visible en vista galeria y lista, posicionado sin salir del viewport. ✓
 
 ---
 

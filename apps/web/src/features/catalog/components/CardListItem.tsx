@@ -1,28 +1,54 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import type { Card } from '../types'
+import { ATTRIBUTE_COLOR } from '../constants'
+import { CardTooltip } from './CardTooltip'
 import styles from './CardListItem.module.css'
 
 interface Props {
   card: Card
 }
 
-const ATTRIBUTE_COLOR: Record<string, string> = {
-  DARK: '#9b59b6',
-  LIGHT: '#f1c40f',
-  EARTH: '#a67c52',
-  WATER: '#3498db',
-  FIRE: '#e74c3c',
-  WIND: '#2ecc71',
-  DIVINE: '#e67e22',
-}
+const HOVER_DELAY_MS = 300
 
 export function CardListItem({ card }: Props) {
   const [imgError, setImgError] = useState(false)
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
+  const articleRef = useRef<HTMLElement>(null)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   const image = card.images[0]
   const attrColor = card.attribute ? (ATTRIBUTE_COLOR[card.attribute] ?? '#7a8fa0') : undefined
 
+  function handleMouseEnter() {
+    timerRef.current = setTimeout(() => {
+      if (articleRef.current) {
+        setAnchorRect(articleRef.current.getBoundingClientRect())
+      }
+    }, HOVER_DELAY_MS)
+  }
+
+  function handleMouseLeave() {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+      timerRef.current = null
+    }
+    setAnchorRect(null)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [])
+
   return (
-    <article className={styles.item}>
+    <article
+      ref={articleRef}
+      className={styles.item}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       {/* Thumbnail */}
       <div className={styles.thumb}>
         {image && !imgError ? (
@@ -60,6 +86,9 @@ export function CardListItem({ card }: Props) {
           {card.attribute}
         </span>
       )}
+
+      {anchorRect &&
+        createPortal(<CardTooltip card={card} anchorRect={anchorRect} />, document.body)}
     </article>
   )
 }

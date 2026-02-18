@@ -65,6 +65,11 @@
       "default": "No cards were found for the current search."
     }
   },
+  "cardTooltip": {
+    "archetype": "Archetype",
+    "marketPrice": "Market Price",
+    "noPrice": "No price data"
+  },
   "placeholder": {
     "comingSoon": "This section will be available soon."
   },

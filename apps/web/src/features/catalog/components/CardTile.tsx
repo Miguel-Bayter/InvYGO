@@ -1,5 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import type { Card } from '../types'
+import { ATTRIBUTE_COLOR } from '../constants'
+import { CardTooltip } from './CardTooltip'
 import styles from './CardTile.module.css'
 
 interface Props {
@@ -20,24 +23,47 @@ const FRAME_LABEL: Record<string, string> = {
   skill: 'SKL',
 }
 
-const ATTRIBUTE_COLOR: Record<string, string> = {
-  DARK: '#9b59b6',
-  LIGHT: '#f1c40f',
-  EARTH: '#a67c52',
-  WATER: '#3498db',
-  FIRE: '#e74c3c',
-  WIND: '#2ecc71',
-  DIVINE: '#e67e22',
-}
+const HOVER_DELAY_MS = 300
 
 export function CardTile({ card }: Props) {
   const [imgError, setImgError] = useState(false)
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
+  const articleRef = useRef<HTMLElement>(null)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   const image = card.images[0]
   const frameLabel = FRAME_LABEL[card.frameType] ?? card.frameType.slice(0, 3).toUpperCase()
   const attrColor = card.attribute ? (ATTRIBUTE_COLOR[card.attribute] ?? '#7a8fa0') : undefined
 
+  function handleMouseEnter() {
+    timerRef.current = setTimeout(() => {
+      if (articleRef.current) {
+        setAnchorRect(articleRef.current.getBoundingClientRect())
+      }
+    }, HOVER_DELAY_MS)
+  }
+
+  function handleMouseLeave() {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+      timerRef.current = null
+    }
+    setAnchorRect(null)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [])
+
   return (
-    <article className={styles.tile}>
+    <article
+      ref={articleRef}
+      className={styles.tile}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <div className={styles.imageWrapper}>
         {image && !imgError ? (
           <img
@@ -74,6 +100,9 @@ export function CardTile({ card }: Props) {
           </div>
         )}
       </div>
+
+      {anchorRect &&
+        createPortal(<CardTooltip card={card} anchorRect={anchorRect} />, document.body)}
     </article>
   )
 }

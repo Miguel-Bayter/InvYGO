@@ -41,6 +41,16 @@ export const ALL_RACES = [...MONSTER_RACES, ...SPELL_TRAP_RACES] as const
 
 export const LEVELS = Array.from({ length: 12 }, (_, i) => i + 1) as number[]
 
+export const ATTRIBUTE_COLOR: Record<string, string> = {
+  DARK: '#9b59b6',
+  LIGHT: '#f1c40f',
+  EARTH: '#a67c52',
+  WATER: '#3498db',
+  FIRE: '#e74c3c',
+  WIND: '#2ecc71',
+  DIVINE: '#e67e22',
+}
+
 export const FRAME_TYPES = [
   { value: 'normal', label: 'Normal' },
   { value: 'effect', label: 'Effect' },
