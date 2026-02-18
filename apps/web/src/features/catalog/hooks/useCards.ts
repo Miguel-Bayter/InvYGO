@@ -1,6 +1,6 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useDebounce } from '@/hooks/useDebounce'
-import { fetchCards, fetchCardsByFrameType } from '../api'
+import { fetchCards } from '../api'
 import type { Card, CardsResult, CatalogFilters } from '../types'
 
 interface UseCardsParams {
@@ -18,12 +18,30 @@ const RETRY_BASE_MS = 400
 const RATE_LIMIT_COOLDOWN_MS = 7000
 
 const MAX_SCAN_PAGES_BY_TYPE: Record<string, number> = {
-  token: 8,
-  link: 30,
-  ritual: 30,
+  token: 5,
+  link: 40,
+  ritual: 40,
   xyz: 30,
   synchro: 30,
   fusion: 30,
+  normal: 15,
+  effect: 10,
+  spell: 10,
+  trap: 15,
+}
+
+// Which frameType values belong to the same display family (includes pendulum variants)
+const FRAME_FAMILY: Record<string, string[]> = {
+  normal: ['normal', 'normal_pendulum'],
+  effect: ['effect', 'effect_pendulum'],
+  ritual: ['ritual', 'ritual_pendulum'],
+  fusion: ['fusion', 'fusion_pendulum'],
+  synchro: ['synchro', 'synchro_pendulum'],
+  xyz: ['xyz', 'xyz_pendulum'],
+  link: ['link'],
+  spell: ['spell'],
+  trap: ['trap'],
+  token: ['token'],
 }
 
 interface ClientFilterAccumulator {
@@ -131,7 +149,10 @@ async function fetchCardsWithRetry(
 }
 
 function matchesClientOnlyFilters(card: Card, frameType: string, hideTokens: boolean): boolean {
-  if (frameType && card.frameType !== frameType) return false
+  if (frameType) {
+    const family = FRAME_FAMILY[frameType] ?? [frameType]
+    if (!family.includes(card.frameType)) return false
+  }
   if (hideTokens && card.frameType === 'token') return false
   return true
 }
@@ -324,10 +345,11 @@ export function useCards({ filters, page, limit = 20 }: UseCardsParams) {
       },
     ],
     queryFn: ({ signal }) =>
-      frameType
-        ? fetchCardsByFrameType(
-            frameType,
+      frameType || hideTokensEnabled
+        ? fetchCardsWithClientFrameFilters(
             {
+              // Pass all supported server-side filters to reduce scan volume;
+              // frameType is applied client-side (wrapper API ignores it).
               fuzzyName: effectiveFuzzyName,
               attribute: attribute || undefined,
               level: level ? Number(level) : undefined,
@@ -335,17 +357,6 @@ export function useCards({ filters, page, limit = 20 }: UseCardsParams) {
               def: parsedDef,
               race: effectiveRace,
               archetype: archetype || undefined,
-              page,
-              limit,
-            },
-            signal
-          )
-        : hideTokensEnabled
-          ? fetchCardsWithClientFrameFilters(
-            {
-              // Keep server query broad in type mode to avoid backend issues
-              // with strict combinations; apply full criteria client-side.
-              fuzzyName: effectiveFuzzyName,
             },
             {
               name: effectiveFuzzyName,
@@ -364,20 +375,20 @@ export function useCards({ filters, page, limit = 20 }: UseCardsParams) {
             hideTokensEnabled,
             signal
           )
-          : fetchCardsWithRetry(
-              {
-                fuzzyName: effectiveFuzzyName,
-                attribute: attribute || undefined,
-                level: level ? Number(level) : undefined,
-                atk: parsedAtk,
-                def: parsedDef,
-                race: effectiveRace,
-                archetype: archetype || undefined,
-                page,
-                limit,
-              },
-              signal // TanStack Query aborts stale requests automatically
-            ),
+        : fetchCardsWithRetry(
+            {
+              fuzzyName: effectiveFuzzyName,
+              attribute: attribute || undefined,
+              level: level ? Number(level) : undefined,
+              atk: parsedAtk,
+              def: parsedDef,
+              race: effectiveRace,
+              archetype: archetype || undefined,
+              page,
+              limit,
+            },
+            signal
+          ),
     placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 5,
     retry: false,

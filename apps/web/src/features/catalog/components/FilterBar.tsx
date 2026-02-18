@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ATTRIBUTES, ALL_RACES, LEVELS, FRAME_TYPES, RARE_FRAME_TYPES } from '../constants'
+import { ATTRIBUTES, ALL_RACES, LEVELS } from '../constants'
 import type { CatalogFilters } from '../types'
 import styles from './FilterBar.module.css'
 
@@ -94,26 +94,6 @@ export function FilterBar({
               </option>
             ))}
           </select>
-        </div>
-
-        {/* Frame Type */}
-        <div className={styles.field}>
-          <label className={styles.label}>{t('catalog.filters.frameType')}</label>
-          <select
-            className={styles.select}
-            value={filters.frameType}
-            onChange={e => onFilterChange('frameType', e.target.value)}
-          >
-            <option value="">{t('catalog.filters.all')}</option>
-            {FRAME_TYPES.map(ft => (
-              <option key={ft.value} value={ft.value}>
-                {ft.label}
-              </option>
-            ))}
-          </select>
-          {filters.frameType && RARE_FRAME_TYPES.has(filters.frameType) && (
-            <span className={styles.filterHint}>{t('catalog.filters.frameTypeHint')}</span>
-          )}
         </div>
 
         {/* ATK */}
