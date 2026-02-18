@@ -60,30 +60,38 @@ function parseTypeParts(type: string): string[] {
     .filter(Boolean)
 }
 
-function getPosition(rect: DOMRect, preferRight: boolean): { left: number; top: number } {
+function getPosition(
+  rect: DOMRect,
+  preferRight: boolean
+): { left: number; top: number; width: number } {
+  const maxW = window.innerWidth - 2 * EDGE_PAD
+  const effectiveW = Math.min(TOOLTIP_W, maxW)
   let left: number
 
-  if (preferRight) {
-    left = window.innerWidth - TOOLTIP_W - EDGE_PAD
+  if (effectiveW < TOOLTIP_W) {
+    // Viewport too narrow: pin to left edge, full available width
+    left = EDGE_PAD
+  } else if (preferRight) {
+    left = window.innerWidth - effectiveW - EDGE_PAD
   } else {
     const spaceRight = window.innerWidth - rect.right - GAP
-    if (spaceRight >= TOOLTIP_W) {
+    if (spaceRight >= effectiveW) {
       left = rect.right + GAP
     } else {
-      left = Math.max(EDGE_PAD, rect.left - TOOLTIP_W - GAP)
+      left = Math.max(EDGE_PAD, rect.left - effectiveW - GAP)
     }
   }
 
   const top = Math.max(EDGE_PAD, Math.min(rect.top, window.innerHeight - TOOLTIP_MAX_H - EDGE_PAD))
 
-  return { left, top }
+  return { left, top, width: effectiveW }
 }
 
 export function CardTooltip({ card, anchorRect, preferRight = false, onClose }: Props) {
   const { t } = useTranslation()
   const image = card.images[0]
   const price = card.prices[0]?.cardmarketPrice
-  const { left, top } = getPosition(anchorRect, preferRight)
+  const { left, top, width } = getPosition(anchorRect, preferRight)
 
   const typeParts = parseTypeParts(card.type)
   const typeLineText = [card.race, ...typeParts].join('/')
@@ -97,7 +105,7 @@ export function CardTooltip({ card, anchorRect, preferRight = false, onClose }: 
 
   return (
     // data-card-tooltip lets parent handleMouseLeave detect when mouse moved here
-    <div className={styles.tooltip} style={{ left, top }} data-card-tooltip onMouseLeave={onClose}>
+    <div className={styles.tooltip} style={{ left, top, width }} data-card-tooltip onMouseLeave={onClose}>
       {/* ── Main layout: image | content ── */}
       <div className={styles.layout}>
         {/* Image */}

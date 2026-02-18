@@ -6,7 +6,8 @@
   justify-content: space-between;
   position: fixed;
   z-index: 9999;
-  width: 500px;
+  width: 500px;       /* default — overridden inline by getPosition */
+  max-width: calc(100vw - 16px);
   height: 356px;
 
   background: rgba(6, 18, 32, 0.98);
@@ -19,6 +20,35 @@
 
   overflow: hidden;
   animation: tooltipIn 0.14s ease;
+}
+
+/* ── Responsive tooltip ─────────────────────── */
+
+/* Tablet: reduce padding slightly */
+@media (max-width: 768px) {
+  .tooltip {
+    height: auto;
+    max-height: 356px;
+  }
+  .descriptionWrap {
+    max-height: 100px;
+  }
+}
+
+/* Mobile: hide card image, compact layout */
+@media (max-width: 520px) {
+  .imageCol {
+    display: none;
+  }
+  .layout {
+    padding: var(--space-3);
+  }
+  .name {
+    font-size: 0.88rem;
+  }
+  .descriptionWrap {
+    max-height: 120px;
+  }
 }
 
 @keyframes tooltipIn {
