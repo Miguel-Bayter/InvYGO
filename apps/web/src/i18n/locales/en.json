@@ -59,6 +59,7 @@
   },
   "ui": {
     "loading": "Loading...",
+    "close": "Close",
     "error": {
       "connectionTitle": "Connection error",
       "connectionMessage": "Could not reach the server. Check your connection and try again.",

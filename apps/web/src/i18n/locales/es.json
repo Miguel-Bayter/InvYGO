@@ -59,6 +59,7 @@
   },
   "ui": {
     "loading": "Cargando...",
+    "close": "Cerrar",
     "error": {
       "connectionTitle": "Error de conexión",
       "connectionMessage": "No se pudo contactar al servidor. Verificá tu conexión e intentá de nuevo.",

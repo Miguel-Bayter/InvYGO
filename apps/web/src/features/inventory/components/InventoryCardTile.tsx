@@ -9,19 +9,40 @@ interface Props {
   item: InventoryItem
 }
 
-const HOVER_DELAY_MS = 300
+const HOVER_DELAY_MS = 500
+const CLOSE_DELAY_MS = 300
+// On touch-only devices the tooltip is driven by handleTouchStart (instant).
+// Mouse events fire spuriously after touch and must be ignored.
+const IS_TOUCH_DEVICE = window.matchMedia('(hover: none)').matches
 
 export function InventoryCardTile({ item }: Props) {
   const [imgError, setImgError] = useState(false)
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
   const [showModal, setShowModal] = useState(false)
   const articleRef = useRef<HTMLElement>(null)
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // Tracks whether the last interaction was a touch (to prevent ghost click opening modal)
+  const wasTouched = useRef(false)
 
   const image = item.card.images[0]
 
+  function cancelClose() {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current)
+      closeTimerRef.current = null
+    }
+  }
+
+  function scheduleClose() {
+    cancelClose()
+    closeTimerRef.current = setTimeout(() => setAnchorRect(null), CLOSE_DELAY_MS)
+  }
+
   function handleMouseEnter() {
-    timerRef.current = setTimeout(() => {
+    if (IS_TOUCH_DEVICE) return
+    cancelClose()
+    hoverTimerRef.current = setTimeout(() => {
       if (articleRef.current) {
         setAnchorRect(articleRef.current.getBoundingClientRect())
       }
@@ -29,23 +50,62 @@ export function InventoryCardTile({ item }: Props) {
   }
 
   function handleMouseLeave(e: React.MouseEvent) {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current)
-      timerRef.current = null
+    if (IS_TOUCH_DEVICE) return
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current)
+      hoverTimerRef.current = null
     }
     const related = e.relatedTarget as Element | null
     if (related?.closest('[data-card-tooltip]')) return
-    setAnchorRect(null)
+    scheduleClose()
   }
 
+  // Touch on card body → show tooltip (badge tap is handled separately)
+  function handleTouchStart() {
+    wasTouched.current = true
+    cancelClose()
+    if (articleRef.current) {
+      setAnchorRect(articleRef.current.getBoundingClientRect())
+    }
+  }
+
+  // Desktop click → open edit modal; touch click is ignored (tooltip was shown instead)
   function handleClick() {
+    if (wasTouched.current) {
+      wasTouched.current = false
+      return
+    }
     setAnchorRect(null)
+    cancelClose()
     setShowModal(true)
   }
 
+  // Badge: dedicated touch/click target to open edit modal on mobile
+  function handleBadgeTap(e: React.MouseEvent | React.TouchEvent) {
+    e.stopPropagation()
+    wasTouched.current = false
+    setAnchorRect(null)
+    cancelClose()
+    setShowModal(true)
+  }
+
+  // Close tooltip when tapping outside on mobile
+  useEffect(() => {
+    if (!anchorRect) return
+    function onDocTouch(e: TouchEvent) {
+      const target = e.target as Element
+      if (target.closest('[data-card-tooltip]')) return
+      if (articleRef.current?.contains(target)) return
+      setAnchorRect(null)
+    }
+    document.addEventListener('touchstart', onDocTouch, { passive: true })
+    return () => document.removeEventListener('touchstart', onDocTouch)
+  }, [anchorRect])
+
   useEffect(() => {
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
+      if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current)
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current)
     }
   }, [])
 
@@ -57,6 +117,7 @@ export function InventoryCardTile({ item }: Props) {
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
       >
         <div className={styles.imageWrapper}>
           {image && !imgError ? (
@@ -72,7 +133,16 @@ export function InventoryCardTile({ item }: Props) {
               <span>⬡</span>
             </div>
           )}
-          <span className={styles.badge}>{item.quantity}</span>
+          {/* Badge: tap to open edit modal on mobile, click on desktop */}
+          <span
+            className={styles.badge}
+            onClick={handleBadgeTap}
+            onTouchStart={e => { e.stopPropagation(); handleBadgeTap(e) }}
+            role="button"
+            aria-label="Edit inventory entry"
+          >
+            {item.quantity}
+          </span>
         </div>
 
         {anchorRect &&
@@ -81,6 +151,7 @@ export function InventoryCardTile({ item }: Props) {
               card={item.card}
               anchorRect={anchorRect}
               onClose={() => setAnchorRect(null)}
+              onCancelClose={cancelClose}
             />,
             document.body
           )}

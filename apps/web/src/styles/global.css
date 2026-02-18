@@ -1,5 +1,26 @@
+@import "tailwindcss";
 @import './tokens.css';
 
+/* ── Tailwind theme — maps design tokens to utility classes ── */
+@theme {
+  --color-cyan-hud: #13b8ff;
+  --color-navy-deep: #061a2b;
+  --color-steel-dark: #1f2c3a;
+  --color-surface-card: #132233;
+  --color-app-white: #f0f6ff;
+  --color-muted-fg: #7a8fa0;
+  --color-amber-hud: #ffb020;
+  --color-red-warn: #ff5d5d;
+
+  /* Custom breakpoints */
+  --breakpoint-xs: 480px;
+
+  /* Fonts */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+/* ── Base reset ── */
 *,
 *::before,
 *::after {

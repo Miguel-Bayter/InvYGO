@@ -22,14 +22,16 @@ export function InventoryPage() {
   const totalCount = allItems.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
-    <div className={styles.page}>
+    <div className="max-w-[1400px] mx-auto px-4 py-6 flex flex-col gap-5">
       {/* Header */}
-      <div className={styles.header}>
-        <h1 className={styles.title}>{t('inventory.title')}</h1>
+      <div className="flex items-baseline gap-4 flex-wrap">
+        <h1 className="text-2xl font-extrabold uppercase tracking-wider text-app-white">
+          {t('inventory.title')}
+        </h1>
         {uniqueCount > 0 && (
-          <div className={styles.stats}>
+          <div className="flex items-center gap-3 font-mono text-sm text-cyan-hud">
             <span>{t('inventory.statsUnique', { count: uniqueCount })}</span>
-            <span className={styles.statsDivider}>·</span>
+            <span className="text-muted-fg">·</span>
             <span>{t('inventory.statsTotal', { count: totalCount })}</span>
           </div>
         )}
@@ -49,7 +51,7 @@ export function InventoryPage() {
             <button
               className={styles.clearBtn}
               onClick={() => setSearch('')}
-              aria-label="Clear search"
+              aria-label={t('ui.close')}
             >
               ✕
             </button>

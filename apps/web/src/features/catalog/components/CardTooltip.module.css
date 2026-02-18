@@ -22,21 +22,57 @@
   animation: tooltipIn 0.14s ease;
 }
 
-/* ── Responsive tooltip ─────────────────────── */
+/* ── Mobile close button ────────────────────── */
+.mobileCloseBtn {
+  display: none; /* hidden on desktop */
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(232, 244, 248, 0.8);
+  font-size: 0.75rem;
+  cursor: pointer;
+  z-index: 1;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast);
+}
 
-/* Tablet: reduce padding slightly */
-@media (max-width: 768px) {
-  .tooltip {
-    height: auto;
-    max-height: 356px;
-  }
-  .descriptionWrap {
-    max-height: 100px;
+.mobileCloseBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Show on touch-only devices */
+@media (hover: none) {
+  .mobileCloseBtn {
+    display: flex;
   }
 }
 
-/* Mobile: hide card image, compact layout */
-@media (max-width: 520px) {
+/* ── Responsive tooltip ─────────────────────── */
+
+/* Tablet: auto height, slightly shorter description */
+@media (max-width: 768px) {
+  .tooltip {
+    height: auto;
+    max-height: min(356px, 80vh);
+  }
+  .descriptionWrap {
+    max-height: 110px;
+  }
+}
+
+/* Mobile (<540px): centered, no image, scrollable, compact */
+@media (max-width: 539px) {
+  .tooltip {
+    height: auto;
+    max-height: min(380px, 72vh);
+    overflow-y: auto;
+  }
   .imageCol {
     display: none;
   }
@@ -47,7 +83,7 @@
     font-size: 0.88rem;
   }
   .descriptionWrap {
-    max-height: 120px;
+    max-height: none;
   }
 }
 
@@ -60,6 +96,18 @@
     opacity: 1;
     transform: scale(1) translateY(0);
   }
+}
+
+@keyframes tooltipOut {
+  to {
+    opacity: 0;
+    transform: scale(0.97) translateY(4px);
+  }
+}
+
+.tooltipClosing {
+  animation: tooltipOut 0.11s ease forwards;
+  pointer-events: none;
 }
 
 /* ── Main layout: image | content ── */

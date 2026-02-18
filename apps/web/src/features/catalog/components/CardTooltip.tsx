@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Card } from '../types'
 import styles from './CardTooltip.module.css'
@@ -14,14 +15,16 @@ import windIcon from '@/assets/icons/Wind.png'
 interface Props {
   card: Card
   anchorRect: DOMRect
-  /** Force tooltip to appear on the right side of the viewport (use in list view) */
+  /** Force tooltip to appear on the right side of the viewport */
   preferRight?: boolean
-  /** Called when the mouse leaves the tooltip (so the parent can hide it) */
+  /** Immediate close — called when mouse leaves the tooltip */
   onClose: () => void
+  /** Cancel a scheduled close — called when mouse enters the tooltip */
+  onCancelClose?: () => void
 }
 
 const TOOLTIP_W = 500
-const TOOLTIP_MAX_H = 420
+const TOOLTIP_MAX_H = 356
 const GAP = 14
 const EDGE_PAD = 8
 
@@ -64,17 +67,35 @@ function getPosition(
   rect: DOMRect,
   preferRight: boolean
 ): { left: number; top: number; width: number } {
-  const maxW = window.innerWidth - 2 * EDGE_PAD
+  const vw = window.innerWidth
+  const vh = window.innerHeight
+  const maxW = vw - 2 * EDGE_PAD
   const effectiveW = Math.min(TOOLTIP_W, maxW)
-  let left: number
 
-  if (effectiveW < TOOLTIP_W) {
-    // Viewport too narrow: pin to left edge, full available width
-    left = EDGE_PAD
-  } else if (preferRight) {
-    left = window.innerWidth - effectiveW - EDGE_PAD
+  // ── Mobile / narrow viewports: center horizontally, anchor below or above the card ──
+  if (vw < 540) {
+    const left = Math.max(EDGE_PAD, (vw - effectiveW) / 2)
+    const belowTop = rect.bottom + GAP
+    const aboveTop = rect.top - TOOLTIP_MAX_H - GAP
+    let top: number
+    if (belowTop + TOOLTIP_MAX_H <= vh - EDGE_PAD) {
+      top = belowTop
+    } else if (aboveTop >= EDGE_PAD) {
+      top = aboveTop
+    } else {
+      top = Math.max(EDGE_PAD, (vh - TOOLTIP_MAX_H) / 2)
+    }
+    return { left, top, width: effectiveW }
+  }
+
+  // ── Desktop: smart side positioning — right if space, left otherwise ──
+  let left: number
+  if (preferRight) {
+    // List view: always pinned to the right edge of the viewport
+    left = vw - effectiveW - EDGE_PAD
   } else {
-    const spaceRight = window.innerWidth - rect.right - GAP
+    // Gallery view: right of card when there is room, left of card otherwise
+    const spaceRight = vw - rect.right - GAP
     if (spaceRight >= effectiveW) {
       left = rect.right + GAP
     } else {
@@ -82,13 +103,13 @@ function getPosition(
     }
   }
 
-  const top = Math.max(EDGE_PAD, Math.min(rect.top, window.innerHeight - TOOLTIP_MAX_H - EDGE_PAD))
-
+  const top = Math.max(EDGE_PAD, Math.min(rect.top, vh - TOOLTIP_MAX_H - EDGE_PAD))
   return { left, top, width: effectiveW }
 }
 
-export function CardTooltip({ card, anchorRect, preferRight = false, onClose }: Props) {
+export function CardTooltip({ card, anchorRect, preferRight = false, onClose, onCancelClose }: Props) {
   const { t } = useTranslation()
+  const [closing, setClosing] = useState(false)
   const image = card.images[0]
   const price = card.prices[0]?.cardmarketPrice
   const { left, top, width } = getPosition(anchorRect, preferRight)
@@ -103,9 +124,26 @@ export function CardTooltip({ card, anchorRect, preferRight = false, onClose }: 
   const hasStats = card.attack !== undefined || card.defense !== undefined
   const hasPrice = price !== undefined && price > 0
 
+  function handleClose() {
+    if (closing) return
+    setClosing(true)
+    setTimeout(onClose, 110)
+  }
+
   return (
     // data-card-tooltip lets parent handleMouseLeave detect when mouse moved here
-    <div className={styles.tooltip} style={{ left, top, width }} data-card-tooltip onMouseLeave={onClose}>
+    <div
+      className={`${styles.tooltip}${closing ? ` ${styles.tooltipClosing}` : ''}`}
+      style={{ left, top, width }}
+      data-card-tooltip
+      onMouseEnter={onCancelClose}
+      onMouseLeave={handleClose}
+    >
+      {/* Mobile close button — visible only on touch screens */}
+      <button className={styles.mobileCloseBtn} onClick={handleClose} aria-label={t('ui.close')}>
+        ✕
+      </button>
+
       {/* ── Main layout: image | content ── */}
       <div className={styles.layout}>
         {/* Image */}

@@ -85,3 +85,11 @@
   background: rgba(19, 184, 255, 0.2);
   color: var(--color-cyan-hud);
 }
+
+/* Always visible on touch-only devices */
+@media (hover: none) {
+  .addBtn {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

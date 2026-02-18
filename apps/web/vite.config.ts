@@ -1,9 +1,10 @@
 import path from 'path'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -11,7 +12,6 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      // /ygo-api/v1/cards → https://ygo-api-wrapper-.../api/v1/cards
       '/ygo-api': {
         target: 'https://ygo-api-wrapper-177404616225.us-central1.run.app',
         changeOrigin: true,

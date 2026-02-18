@@ -1,64 +1,55 @@
+/* ── Header shell ────────────────────────────────────────────────────── */
 .header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: rgba(6, 26, 43, 0.92);
+  background-color: rgba(6, 26, 43, 0.95);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(19, 184, 255, 0.15);
 }
 
-.nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 var(--space-6);
-  height: 60px;
-}
-
+/* ── Brand ───────────────────────────────────────────────────────────── */
 .brand {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   font-family: var(--font-mono);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--color-cyan-hud) !important;
   letter-spacing: 0.05em;
   text-shadow: var(--glow-cyan);
+  flex-shrink: 0;
 }
 
 .brandIcon {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
+  line-height: 1;
 }
 
-.links {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  list-style: none;
-}
-
+/* ── Nav link ────────────────────────────────────────────────────────── */
 .link {
-  font-size: 0.875rem;
-  font-weight: 500;
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
   color: var(--color-muted);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   transition:
     color var(--transition-fast),
     border-color var(--transition-fast),
     background-color var(--transition-fast);
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  font-size: 0.75rem;
+  white-space: nowrap;
 }
 
 .link:hover {
   color: var(--color-cyan-hud);
-  background-color: rgba(19, 184, 255, 0.05);
+  background-color: rgba(19, 184, 255, 0.06);
   border-color: rgba(19, 184, 255, 0.2);
   opacity: 1;
 }
@@ -68,4 +59,93 @@
   border-color: rgba(19, 184, 255, 0.35) !important;
   background-color: rgba(19, 184, 255, 0.08) !important;
   text-shadow: var(--glow-cyan);
+}
+
+/* ── Hamburger button — visible only on mobile ───────────────────────── */
+.menuBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid rgba(19, 184, 255, 0.2);
+  color: var(--color-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    background-color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.menuBtn:hover {
+  color: var(--color-cyan-hud);
+  border-color: rgba(19, 184, 255, 0.4);
+  background-color: rgba(19, 184, 255, 0.06);
+}
+
+/* Hide hamburger on sm+ — Tailwind's sm:hidden handles the button,
+   but we also hide it in CSS as a safety net */
+@media (min-width: 640px) {
+  .menuBtn {
+    display: none;
+  }
+}
+
+/* ── Mobile dropdown menu ────────────────────────────────────────────── */
+.mobileMenu {
+  border-top: 1px solid rgba(19, 184, 255, 0.1);
+  background-color: rgba(6, 26, 43, 0.98);
+  padding: var(--space-2) var(--space-4);
+  animation: menuSlideDown 0.15s ease;
+}
+
+/* Mobile links: full-width, tall touch targets */
+.mobileMenu .link {
+  width: 100%;
+  font-size: 0.82rem;
+  padding: 14px var(--space-3);
+  border-left: 2px solid transparent;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 0;
+  letter-spacing: 0.08em;
+}
+
+.mobileMenu .link:hover {
+  border-left-color: rgba(19, 184, 255, 0.4);
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  background-color: rgba(19, 184, 255, 0.05);
+}
+
+.mobileMenu .linkActive {
+  border-left-color: var(--color-cyan-hud) !important;
+  border-top: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+  background-color: rgba(19, 184, 255, 0.08) !important;
+}
+
+/* Hide mobile menu on desktop */
+@media (min-width: 640px) {
+  .mobileMenu {
+    display: none;
+  }
+}
+
+@keyframes menuSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
