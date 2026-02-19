@@ -2,6 +2,7 @@ import type { CarouselCard, CarouselState } from './types'
 
 export const CAROUSEL_MIN_ITEMS = 6
 export const CAROUSEL_MAX_ITEMS = 10
+export const CAROUSEL_DEFAULT_ITEMS = 10
 
 const DEFAULT_POOL = [
   '14558127',
@@ -30,10 +31,6 @@ function toImageUrl(cardId: string): string {
   return `https://images.ygoprodeck.com/images/cards/${cardId}.jpg`
 }
 
-function randomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
 function shuffle<T>(items: T[]): T[] {
   const arr = [...items]
   for (let i = arr.length - 1; i > 0; i -= 1) {
@@ -47,8 +44,7 @@ function shuffle<T>(items: T[]): T[] {
 
 export function getDefaultCarouselCards(): CarouselCard[] {
   const now = new Date().toISOString()
-  const count = randomInt(CAROUSEL_MIN_ITEMS, CAROUSEL_MAX_ITEMS)
-  const selected = shuffle(DEFAULT_POOL).slice(0, count)
+  const selected = shuffle(DEFAULT_POOL).slice(0, CAROUSEL_DEFAULT_ITEMS)
 
   return selected.map((cardId, index) => ({
     id: `default-${cardId}-${index}`,

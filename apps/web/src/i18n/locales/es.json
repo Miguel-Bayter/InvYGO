@@ -5,10 +5,10 @@
     "decks": "Deck Builder"
   },
   "home": {
-    "subtitle": "Gestiona tu colección. Construye tus decks. Domina el meta.",
+    "subtitle": "Gestiona tu colección. Crea decks. Domina el meta.",
     "carousel": {
-      "openConfig": "Configurar carrusel",
-      "closeConfig": "Cerrar configuración",
+      "openConfig": "Configurar",
+      "closeConfig": "Cerrar",
       "innerStyle": "Reverso interno",
       "outerSide": "Cara externa",
       "classic": "Clásico",
