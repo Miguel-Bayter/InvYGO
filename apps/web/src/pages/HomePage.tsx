@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import carruselBg from '@/assets/carrusel.jpg'
 import carruselModel from '@/assets/carrusel-removebg.png'
+import reverseClassic from '@/assets/reverse/reverse-classic.jpg'
 import styles from './HomePage.module.css'
 
 export function HomePage() {
@@ -32,9 +33,12 @@ export function HomePage() {
             <div
               key={src}
               className={styles.item}
-              style={{ ['--position' as string]: index + 1 } as CSSProperties}
+              style={{ ['--position' as string]: index + 1, ['--reverse-bg' as string]: `url(${reverseClassic})` } as CSSProperties}
             >
-              <img src={src} alt={`YGO showcase ${index + 1}`} />
+              <div className={`${styles.cardFace} ${styles.faceFront}`} />
+              <div className={`${styles.cardFace} ${styles.faceBack}`}>
+                <img src={src} alt={`YGO showcase ${index + 1}`} />
+              </div>
             </div>
           ))}
         </div>
