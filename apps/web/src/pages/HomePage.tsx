@@ -65,7 +65,9 @@ export function HomePage() {
         </div>
 
         <div className={styles.panel}>
-          <h2>InvYGO</h2>
+          <h2>
+            <span className={styles.panelAccent}>Inv</span>YGO
+          </h2>
           <p>{t('home.subtitle')}</p>
           <div className={styles.actions}>
             <Link to="/catalog" className={styles.primaryBtn}>

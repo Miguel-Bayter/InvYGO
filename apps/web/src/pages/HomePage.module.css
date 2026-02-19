@@ -137,39 +137,46 @@
 .panel {
   position: absolute;
   right: clamp(14px, 2.6vw, 30px);
-  bottom: clamp(22px, 4vh, 40px);
-  width: min(396px, 34vw);
+  bottom: calc(clamp(22px, 4vh, 40px) + 13px);
+  width: min(430px, 34vw);
   text-align: right;
   pointer-events: auto;
   z-index: 8;
-  padding: 13px 13px 15px;
+  padding: 10px 10px 10px;
   border: 1px solid rgba(19, 184, 255, 0.22);
   background: linear-gradient(180deg, rgba(8, 30, 52, 0.68), rgba(4, 19, 34, 0.64));
   backdrop-filter: blur(6px);
 }
 
 .panel h2 {
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 1.85vw, 2rem);
   line-height: 1;
   color: var(--color-app-white);
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   letter-spacing: 0.01em;
 }
 
+.panelAccent {
+  color: var(--color-cyan-hud);
+}
+
 .panel p {
-  font-size: clamp(0.88rem, 0.95vw, 1.02rem);
-  line-height: 1.38;
+  font-size: clamp(0.68rem, 0.76vw, 0.82rem);
+  line-height: 1.2;
   color: rgba(240, 246, 255, 0.72);
-  margin-bottom: 10px;
-  max-width: 32ch;
-  margin-left: auto;
-  text-wrap: balance;
+  margin-bottom: 7px;
+  max-width: 100%;
+  margin-left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.32fr);
+  gap: 6px;
+  justify-content: stretch;
 }
 
 .primaryBtn,
@@ -177,10 +184,15 @@
 .configBtn {
   text-decoration: none;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  font-size: 0.56rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 9px 12px;
+  letter-spacing: 0.09em;
+  padding: 7px 6px;
+  min-height: 32px;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(19, 184, 255, 0.3);
   transition: all var(--transition-fast);
@@ -315,15 +327,15 @@
 
 @media (min-width: 1700px) {
   .panel {
-    width: min(430px, 30vw);
+    width: min(460px, 28vw);
   }
 
   .panel h2 {
-    font-size: clamp(2.25rem, 2.6vw, 3.45rem);
+    font-size: clamp(1.72rem, 1.6vw, 2.1rem);
   }
 
   .panel p {
-    font-size: clamp(0.92rem, 0.84vw, 1.04rem);
+    font-size: clamp(0.64rem, 0.56vw, 0.74rem);
   }
 }
 
