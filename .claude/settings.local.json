@@ -24,7 +24,11 @@
       "Bash(node_modules/.bin/tsc:*)",
       "Bash(./node_modules/.bin/tsc:*)",
       "Bash(node ./node_modules/typescript/bin/tsc:*)",
-      "Bash(tee:*)"
+      "Bash(tee:*)",
+      "WebFetch(domain:www.youtube.com)",
+      "WebSearch",
+      "WebFetch(domain:www.figma.com)",
+      "WebFetch(domain:medium.com)"
     ]
   }
 }

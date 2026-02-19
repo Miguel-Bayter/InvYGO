@@ -13,6 +13,7 @@
       "missing": "Faltantes",
       "cardsAvailable": "cartas disponibles",
       "cardsRegistered": "cartas registradas",
+      "statsCopies": "{{total}} copias totales",
       "activeDecks": "decks activos",
       "noActiveDeck": "sin deck activo"
     }
@@ -67,6 +68,8 @@
       "serviceUnavailableMessage": "La API está temporalmente caída. Intentá de nuevo en unos segundos.",
       "loadCardsTitle": "Error al cargar cartas",
       "loadCardsMessage": "No se pudieron cargar las cartas. Revisá tu conexión.",
+      "rateLimitTitle": "Demasiadas solicitudes",
+      "rateLimitMessage": "Se realizaron demasiadas solicitudes seguidas. Esperá unos segundos e intentá de nuevo.",
       "retry": "Reintentar"
     },
     "empty": {

@@ -13,6 +13,7 @@
       "missing": "Missing",
       "cardsAvailable": "cards available",
       "cardsRegistered": "cards registered",
+      "statsCopies": "{{total}} total copies",
       "activeDecks": "active decks",
       "noActiveDeck": "no active deck"
     }
@@ -67,6 +68,8 @@
       "serviceUnavailableMessage": "The API is temporarily down. Try again in a few seconds.",
       "loadCardsTitle": "Error loading cards",
       "loadCardsMessage": "Could not load cards. Check your connection.",
+      "rateLimitTitle": "Too many requests",
+      "rateLimitMessage": "The API is being hit too frequently. Wait a few seconds and try again.",
       "retry": "Retry"
     },
     "empty": {

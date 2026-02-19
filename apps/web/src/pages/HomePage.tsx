@@ -1,57 +1,65 @@
+import type { CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
+import carruselBg from '@/assets/carrusel.jpg'
+import carruselModel from '@/assets/carrusel-removebg.png'
 import styles from './HomePage.module.css'
 
 export function HomePage() {
   const { t } = useTranslation()
 
+  const slides = [
+    'https://images.ygoprodeck.com/images/cards/14558127.jpg',
+    'https://images.ygoprodeck.com/images/cards/46986414.jpg',
+    'https://images.ygoprodeck.com/images/cards/89631139.jpg',
+    'https://images.ygoprodeck.com/images/cards/74677422.jpg',
+    'https://images.ygoprodeck.com/images/cards/6150044.jpg',
+    'https://images.ygoprodeck.com/images/cards/44508094.jpg',
+    'https://images.ygoprodeck.com/images/cards/23995346.jpg',
+    'https://images.ygoprodeck.com/images/cards/9753964.jpg',
+    'https://images.ygoprodeck.com/images/cards/40908371.jpg',
+    'https://images.ygoprodeck.com/images/cards/6983839.jpg',
+  ]
+
   return (
-    <div className={styles.container}>
-      <div className={styles.hero}>
-        <h1 className={styles.title}>
-          <span className={styles.titleAccent}>Inv</span>Ygo
-        </h1>
-        <p className={styles.subtitle}>{t('home.subtitle')}</p>
-        <div className={styles.grid}>
-          <StatusCard
-            label={t('home.stats.catalog')}
-            value="~12K+"
-            description={t('home.stats.cardsAvailable')}
-          />
-          <StatusCard
-            label={t('home.stats.inventory')}
-            value="0"
-            description={t('home.stats.cardsRegistered')}
-          />
-          <StatusCard
-            label={t('home.stats.decks')}
-            value="0"
-            description={t('home.stats.activeDecks')}
-          />
-          <StatusCard
-            label={t('home.stats.missing')}
-            value="—"
-            description={t('home.stats.noActiveDeck')}
-          />
+    <div className={styles.page}>
+      <div
+        className={styles.banner}
+        style={{ ['--hero-bg' as string]: `url(${carruselBg})` } as CSSProperties}
+      >
+        <div className={styles.slider} style={{ ['--quantity' as string]: slides.length } as CSSProperties}>
+          {slides.map((src, index) => (
+            <div
+              key={src}
+              className={styles.item}
+              style={{ ['--position' as string]: index + 1 } as CSSProperties}
+            >
+              <img src={src} alt={`YGO showcase ${index + 1}`} />
+            </div>
+          ))}
+        </div>
+
+        <div className={styles.content}>
+          <img src={carruselModel} alt="Hero model" className={styles.model} />
+
+          <h1 className={styles.logoText}>
+            <span className={styles.logoAccent}>INV</span>YGO
+          </h1>
+        </div>
+
+        <div className={styles.panel}>
+          <h2>InvYGO</h2>
+          <p>{t('home.subtitle')}</p>
+          <div className={styles.actions}>
+            <Link to="/catalog" className={styles.primaryBtn}>
+              {t('nav.catalog')}
+            </Link>
+            <Link to="/inventory" className={styles.ghostBtn}>
+              {t('nav.inventory')}
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
-  )
-}
-
-function StatusCard({
-  label,
-  value,
-  description,
-}: {
-  label: string
-  value: string
-  description: string
-}) {
-  return (
-    <div className={styles.card}>
-      <span className={styles.cardLabel}>{label}</span>
-      <span className={styles.cardValue}>{value}</span>
-      <span className={styles.cardDesc}>{description}</span>
     </div>
   )
 }

@@ -135,13 +135,13 @@ export function InventoryCardTile({ item }: Props) {
           )}
           {/* Badge: tap to open edit modal on mobile, click on desktop */}
           <span
-            className={styles.badge}
+            className={`${styles.badge} ${item.quantity > 99 ? styles.badgeWide : ''}`}
             onClick={handleBadgeTap}
             onTouchStart={e => { e.stopPropagation(); handleBadgeTap(e) }}
             role="button"
             aria-label="Edit inventory entry"
           >
-            {item.quantity}
+            {item.quantity > 99 ? '+99' : item.quantity}
           </span>
         </div>
 

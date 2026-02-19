@@ -51,9 +51,10 @@
   position: absolute;
   bottom: 4px;
   left: 4px;
-  width: 28px;
+  min-width: 28px;
   height: 28px;
-  border-radius: 50%;
+  border-radius: 14px; /* pill — works as circle for 1–2 digits */
+  padding: 0 6px;
   background: #0a0a0a;
   border: 2px solid #e74c3c;
   color: #f5a623;
@@ -68,4 +69,12 @@
     0 0 0 1px #8b0000,
     0 3px 8px rgba(0, 0, 0, 0.7);
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  /* Touch target expansion (invisible) */
+  cursor: pointer;
+}
+
+/* +99 variant: slightly smaller font to fit cleanly */
+.badgeWide {
+  font-size: 0.72rem;
+  letter-spacing: -0.02em;
 }

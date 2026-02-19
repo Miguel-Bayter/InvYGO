@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FilterBar } from '@/features/catalog/components/FilterBar'
 import { CardGrid } from '@/features/catalog/components/CardGrid'
@@ -20,8 +20,7 @@ export function CatalogPage() {
   const { t } = useTranslation()
   const [view, setView] = useState<ViewMode>('gallery')
 
-  const { filters, page, setFilter, setPage, clearFilters, activeFiltersCount, hasActiveFilters } =
-    useCatalogFilters()
+  const { filters, page, setFilter, setPage, clearFilters, activeFiltersCount } = useCatalogFilters()
 
   const { data, isLoading, isFetching, isError, error, refetch, isDebouncing } = useCards({
     filters,
@@ -31,19 +30,32 @@ export function CatalogPage() {
 
   const { data: archetypes = [], isLoading: archetypesLoading } = useArchetypes()
 
+  // Scroll to top after React commits the new page render
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [page])
+
   function handlePageChange(newPage: number) {
     setPage(newPage)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const errorStatus =
-    error && 'response' in (error as object)
-      ? ((error as { response?: { status?: number } }).response?.status ?? 0)
-      : 0
+  function getErrorType(err: unknown): 'network' | 'rateLimit' | 'unavailable' | 'generic' {
+    if (err instanceof Error && err.message === 'YGO_API_RATE_LIMITED') return 'rateLimit'
+    const status =
+      err && typeof err === 'object' && 'response' in err
+        ? ((err as { response?: { status?: number } }).response?.status ?? 0)
+        : 0
+    if (status === 0) return 'network'
+    if (status === 429) return 'rateLimit'
+    if (status === 503) return 'unavailable'
+    return 'generic'
+  }
 
+  const errType = getErrorType(error)
   const isBusy = isFetching || isDebouncing
-
   const visibleCards = data?.cards ?? []
+  // True when any non-name filter is active (determines empty-state message tone)
+  const hasNonNameFilter = Object.entries(filters).some(([k, v]) => k !== 'name' && v !== '')
 
   return (
     <div className={styles.page}>
@@ -84,21 +96,23 @@ export function CatalogPage() {
         ) : isError ? (
           <ErrorMessage
             title={
-              errorStatus === 503
-                ? t('ui.error.serviceUnavailableTitle')
-                : t('ui.error.loadCardsTitle')
+              errType === 'network'     ? t('ui.error.connectionTitle') :
+              errType === 'rateLimit'   ? t('ui.error.rateLimitTitle') :
+              errType === 'unavailable' ? t('ui.error.serviceUnavailableTitle') :
+                                         t('ui.error.loadCardsTitle')
             }
             message={
-              errorStatus === 503
-                ? t('ui.error.serviceUnavailableMessage')
-                : t('ui.error.loadCardsMessage')
+              errType === 'network'     ? t('ui.error.connectionMessage') :
+              errType === 'rateLimit'   ? t('ui.error.rateLimitMessage') :
+              errType === 'unavailable' ? t('ui.error.serviceUnavailableMessage') :
+                                         t('ui.error.loadCardsMessage')
             }
             onRetry={() => void refetch()}
           />
         ) : data && visibleCards.length === 0 ? (
           <EmptyState
             title={t('ui.empty.title')}
-            description={hasActiveFilters ? t('ui.empty.withFilters') : t('ui.empty.withSearch')}
+            description={hasNonNameFilter ? t('ui.empty.withFilters') : t('ui.empty.withSearch')}
           />
         ) : data ? (
           <>
