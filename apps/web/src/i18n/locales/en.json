@@ -6,6 +6,17 @@
   },
   "home": {
     "subtitle": "Manage your collection. Build your decks. Dominate the meta.",
+    "carousel": {
+      "openConfig": "Configure carousel",
+      "closeConfig": "Close config",
+      "innerStyle": "Inner reverse",
+      "outerSide": "Outer face",
+      "classic": "Classic",
+      "anime": "Anime",
+      "reverse": "Reverse",
+      "art": "Artwork",
+      "reset": "Reset defaults"
+    },
     "stats": {
       "catalog": "Catalog",
       "inventory": "Inventory",
@@ -105,6 +116,10 @@
       "update": "Update",
       "remove": "Remove",
       "quantity": "Quantity",
+      "carousel": "Carousel",
+      "addToCarousel": "Add to carousel",
+      "inCarousel": "Already in carousel",
+      "carouselFull": "Carousel is full (10/10)",
       "condition": "Condition",
       "edition": "Edition",
       "cancel": "Cancel"

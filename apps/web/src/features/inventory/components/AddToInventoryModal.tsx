@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import type { Card } from '../../catalog/types'
-import type { CardCondition, CardEdition } from '../types'
 import { useInventory } from '../context'
+import { useCarousel } from '../../carousel/context'
+import { CAROUSEL_MAX_ITEMS } from '../../carousel/defaults'
 import styles from './AddToInventoryModal.module.css'
 
 interface Props {
@@ -11,26 +12,15 @@ interface Props {
   onClose: () => void
 }
 
-const CONDITIONS: CardCondition[] = [
-  'mint',
-  'near-mint',
-  'excellent',
-  'good',
-  'light-played',
-  'played',
-  'poor',
-]
-
-const EDITIONS: CardEdition[] = ['first', 'unlimited']
-
 export function AddToInventoryModal({ card, onClose }: Props) {
   const { t } = useTranslation()
   const { getItem, addOrUpdate, remove } = useInventory()
+  const { state, addCard, hasCard } = useCarousel()
   const existing = getItem(card.id)
+  const inCarousel = hasCard(card.id)
+  const carouselIsFull = state.cards.length >= CAROUSEL_MAX_ITEMS
 
   const [quantity, setQuantity] = useState(existing?.quantity ?? 1)
-  const [condition, setCondition] = useState<CardCondition>(existing?.condition ?? 'near-mint')
-  const [edition, setEdition] = useState<CardEdition>(existing?.edition ?? 'unlimited')
 
   const overlayRef = useRef<HTMLDivElement>(null)
   const image = card.images[0]
@@ -50,8 +40,12 @@ export function AddToInventoryModal({ card, onClose }: Props) {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    addOrUpdate({ card, quantity, condition, edition })
+    addOrUpdate({ card, quantity })
     onClose()
+  }
+
+  function handleAddToCarousel() {
+    addCard({ card })
   }
 
   function handleRemove() {
@@ -103,7 +97,12 @@ export function AddToInventoryModal({ card, onClose }: Props) {
           <div className={styles.field}>
             <label className={styles.label}>{t('inventory.modal.quantity')}</label>
             <div className={styles.stepper}>
-              <button type="button" className={styles.stepBtn} onClick={decrement} disabled={quantity <= 1}>
+              <button
+                type="button"
+                className={styles.stepBtn}
+                onClick={decrement}
+                disabled={quantity <= 1}
+              >
                 −
               </button>
               <input
@@ -119,36 +118,20 @@ export function AddToInventoryModal({ card, onClose }: Props) {
             </div>
           </div>
 
-          {/* Condition */}
           <div className={styles.field}>
-            <label className={styles.label}>{t('inventory.modal.condition')}</label>
-            <select
-              className={styles.select}
-              value={condition}
-              onChange={e => setCondition(e.target.value as CardCondition)}
+            <label className={styles.label}>{t('inventory.modal.carousel')}</label>
+            <button
+              type="button"
+              className={`${styles.carouselBtn} ${inCarousel ? styles.carouselBtnActive : ''}`}
+              onClick={handleAddToCarousel}
+              disabled={inCarousel || carouselIsFull}
             >
-              {CONDITIONS.map(c => (
-                <option key={c} value={c}>
-                  {t(`inventory.conditions.${c}`)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Edition */}
-          <div className={styles.field}>
-            <label className={styles.label}>{t('inventory.modal.edition')}</label>
-            <select
-              className={styles.select}
-              value={edition}
-              onChange={e => setEdition(e.target.value as CardEdition)}
-            >
-              {EDITIONS.map(ed => (
-                <option key={ed} value={ed}>
-                  {t(`inventory.editions.${ed}`)}
-                </option>
-              ))}
-            </select>
+              {inCarousel
+                ? t('inventory.modal.inCarousel')
+                : carouselIsFull
+                  ? t('inventory.modal.carouselFull')
+                  : t('inventory.modal.addToCarousel')}
+            </button>
           </div>
 
           {/* Actions */}

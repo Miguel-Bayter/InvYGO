@@ -192,6 +192,37 @@
   border-color: var(--color-cyan-hud);
 }
 
+.carouselBtn {
+  width: 100%;
+  border: var(--border-hud);
+  border-radius: var(--radius-sm);
+  background: rgba(19, 184, 255, 0.08);
+  color: var(--color-cyan-hud);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.carouselBtn:hover:not(:disabled) {
+  border-color: rgba(19, 184, 255, 0.7);
+  background: rgba(19, 184, 255, 0.18);
+}
+
+.carouselBtnActive,
+.carouselBtn:disabled {
+  background: rgba(118, 188, 140, 0.2);
+  color: rgba(171, 229, 189, 0.96);
+  border-color: rgba(118, 188, 140, 0.52);
+  cursor: not-allowed;
+}
+
 /* ── Actions ─────────────────────────────────── */
 .actions {
   display: flex;

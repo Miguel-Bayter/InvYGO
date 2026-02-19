@@ -6,8 +6,8 @@ import type { Card } from '../catalog/types'
 interface AddOrUpdatePayload {
   card: Card
   quantity: number
-  condition: CardCondition
-  edition: CardEdition
+  condition?: CardCondition
+  edition?: CardEdition
 }
 
 interface InventoryContextValue {
@@ -34,8 +34,8 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
           cardId: card.id,
           card,
           quantity,
-          condition,
-          edition,
+          condition: condition ?? existing?.condition ?? 'near-mint',
+          edition: edition ?? existing?.edition ?? 'unlimited',
           addedAt: existing?.addedAt ?? now,
           updatedAt: now,
         },
@@ -54,10 +54,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
-  const getItem = useCallback(
-    (cardId: string) => inventory[cardId],
-    [inventory]
-  )
+  const getItem = useCallback((cardId: string) => inventory[cardId], [inventory])
 
   return (
     <InventoryContext.Provider value={{ inventory, addOrUpdate, remove, getItem }}>
