@@ -51,12 +51,14 @@
 }
 
 .name {
-  font-size: 0.88rem;
-  font-weight: 600;
+  font-family: var(--font-ygo);
+  font-size: 0.82rem;
+  font-weight: 700;
   color: var(--color-white);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: 0.02em;
 }
 
 .type {

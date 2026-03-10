@@ -14,11 +14,11 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  font-family: var(--font-mono);
-  font-size: 1.1rem;
+  font-family: var(--font-ygo);
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--color-cyan-hud) !important;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
   text-shadow: var(--glow-cyan);
   flex-shrink: 0;
 }

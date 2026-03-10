@@ -23,6 +23,8 @@
   /* Typography */
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-ygo: 'Cinzel', 'Times New Roman', serif;
+  --font-ygo-text: 'Crimson Pro', Georgia, serif;
 
   /* Spacing */
   --space-1: 4px;

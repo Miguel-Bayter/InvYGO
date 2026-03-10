@@ -1,2 +1,2 @@
-// Decks feature - Sprint 5
-export {}
+export { DecksProvider, useDecks } from './context'
+export type { Deck, DeckEntry, DeckSection, DecksState } from './types'

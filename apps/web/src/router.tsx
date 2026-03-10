@@ -3,7 +3,7 @@ import { AppLayout } from './components/layout/AppLayout'
 import { HomePage } from './pages/HomePage'
 import { CatalogPage } from './pages/CatalogPage'
 import { InventoryPage } from './pages/InventoryPage'
-import { PlaceholderPage } from './pages/PlaceholderPage'
+import { DecksPage } from './pages/DecksPage'
 
 export const router = createBrowserRouter([
   {
@@ -24,7 +24,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'decks',
-        element: <PlaceholderPage titleKey="router.deckBuilder" sprint="Sprint 5" />,
+        element: <DecksPage />,
       },
     ],
   },

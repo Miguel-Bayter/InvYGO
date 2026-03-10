@@ -1,0 +1,241 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  padding-top: 80px;
+}
+
+.modal {
+  background: var(--surface-panel);
+  border: var(--border-hud);
+  border-radius: var(--radius-md);
+  width: min(520px, 94vw);
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 40px rgba(19, 184, 255, 0.15);
+  overflow: hidden;
+}
+
+/* ── Header ──────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 12px 14px;
+  border-bottom: var(--border-hud);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  background: var(--surface-card);
+  border: var(--border-hud);
+  border-radius: var(--radius-sm);
+  color: var(--color-white);
+  font-size: 0.88rem;
+  padding: 8px 12px;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--color-cyan-hud);
+}
+
+.searchInput::placeholder {
+  color: var(--color-muted);
+}
+
+.sectionSelect {
+  background: var(--surface-card);
+  border: var(--border-hud);
+  border-radius: var(--radius-sm);
+  color: var(--color-cyan-hud);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 8px 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+  appearance: none;
+}
+
+.sectionSelect:focus {
+  outline: none;
+  border-color: var(--color-cyan-hud);
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  transition: color var(--transition-fast);
+}
+
+.closeBtn:hover {
+  color: var(--color-white);
+}
+
+/* ── Results ─────────────────────────────────── */
+.results {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.resultRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px 14px;
+  cursor: pointer;
+  border-bottom: var(--border-hud);
+  transition: background var(--transition-fast);
+}
+
+.resultRow:hover {
+  background: rgba(19, 184, 255, 0.06);
+}
+
+.resultRow:last-child {
+  border-bottom: none;
+}
+
+.thumb {
+  width: 30px;
+  height: 43px;
+  object-fit: contain;
+  border-radius: 2px;
+  flex-shrink: 0;
+  background: var(--surface-card);
+}
+
+.thumbFallback {
+  width: 30px;
+  height: 43px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.cardInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.cardName {
+  font-family: var(--font-ygo);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--color-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.02em;
+}
+
+.cardMeta {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  color: var(--color-muted);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.extraBadge {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(255, 176, 32, 0.12);
+  border: 1px solid rgba(255, 176, 32, 0.4);
+  color: var(--color-amber-alert);
+  white-space: nowrap;
+}
+
+.addBtn {
+  background: rgba(19, 184, 255, 0.1);
+  border: var(--border-hud);
+  border-radius: var(--radius-sm);
+  color: var(--color-cyan-hud);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.addBtn:hover {
+  background: rgba(19, 184, 255, 0.22);
+  border-color: var(--color-cyan-hud);
+}
+
+.addBtnDisabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.addBtnDisabled:hover {
+  background: rgba(19, 184, 255, 0.1);
+  border-color: rgba(19, 184, 255, 0.2);
+}
+
+/* ── Status messages ─────────────────────────── */
+.status {
+  padding: var(--space-6);
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--color-muted);
+}
+
+.sectionFullBanner {
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-danger, #ff4d4d);
+  background: rgba(255, 77, 77, 0.08);
+  border-bottom: 1px solid rgba(255, 77, 77, 0.25);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.hint {
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: var(--border-hud);
+  flex-shrink: 0;
+}
+
+.redirectHint {
+  margin-left: 8px;
+  color: var(--color-amber-alert);
+}

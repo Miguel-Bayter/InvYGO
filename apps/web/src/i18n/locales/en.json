@@ -21,12 +21,7 @@
       "catalog": "Catalog",
       "inventory": "Inventory",
       "decks": "Decks",
-      "missing": "Missing",
-      "cardsAvailable": "cards available",
-      "cardsRegistered": "cards registered",
-      "statsCopies": "{{total}} total copies",
-      "activeDecks": "active decks",
-      "noActiveDeck": "no active deck"
+      "missing": "Missing"
     }
   },
   "catalog": {
@@ -102,6 +97,77 @@
     "inventory": "My Inventory",
     "deckBuilder": "Deck Builder"
   },
+  "decks": {
+    "page": {
+      "count": "{{count}} decks",
+      "noDeckTitle": "Select a deck",
+      "noDeckDesc": "Pick a deck from the list or create a new one.",
+      "emptyTitle": "No decks yet",
+      "emptyDesc": "Create your first deck with the \"New\" button."
+    },
+    "sidebar": {
+      "title": "My Decks",
+      "new": "New",
+      "newDeckName": "New Deck",
+      "rename": "Rename",
+      "clone": "Duplicate",
+      "delete": "Delete",
+      "confirmDelete": "Delete?",
+      "cancelDelete": "Cancel",
+      "emptyHint": "No decks yet. Create one."
+    },
+    "section": {
+      "main": "Main",
+      "extra": "Extra",
+      "side": "Side"
+    },
+    "builder": {
+      "addCard": "Add card",
+      "updated": "Updated {{date}}",
+      "emptySection": "No cards in this section."
+    },
+    "entry": {
+      "missing": "−{{count}} missing",
+      "missing_other": "−{{count}} missing",
+      "decrease": "Decrease quantity",
+      "increase": "Increase quantity",
+      "increaseMaxCopies": "Maximum 3 copies of this card",
+      "increaseSectionFull": "Section is full ({{current}}/{{max}})",
+      "remove": "Remove from deck"
+    },
+    "search": {
+      "placeholder": "Search card by name...",
+      "typeToSearch": "Type to search for cards.",
+      "add": "Add",
+      "maxCopies": "Maximum 3 copies",
+      "sectionFull": "Section is full",
+      "sectionFullBanner": "{{section}} deck is full ({{max}}/{{max}}) — select a different section",
+      "addingTo": "Adding to: {{section}}",
+      "extraDeck": "EXTRA DECK",
+      "extraOnly": "extra deck only",
+      "mainOnly": "main deck only",
+      "extraAutoRedirect": "Fusion/Synchro/XYZ/Link → goes to Extra",
+      "mainAutoRedirect": "This card can't go to Extra → goes to Main"
+    },
+    "toast": {
+      "added": "{{name}} added to {{deck}}",
+      "maxCopies": "Max. 3 copies — {{name}} already has {{count}} in this deck",
+      "sectionFull": "{{section}} section is full ({{current}}/{{max}})"
+    },
+    "status": {
+      "valid": "Valid",
+      "incomplete": "Incomplete",
+      "invalid": "Invalid"
+    },
+    "missing": {
+      "title": "Missing",
+      "complete": "Complete",
+      "allGood": "✓ You have all the cards for this deck.",
+      "coverage": "Inventory coverage",
+      "critical": "no copies",
+      "partial": "partial"
+    }
+  },
   "inventory": {
     "title": "My Inventory",
     "statsUnique": "{{count}} unique cards",
@@ -110,6 +176,14 @@
     "empty": {
       "title": "Empty inventory",
       "desc": "Add cards from the catalog."
+    },
+    "sort": {
+      "label": "Sort by",
+      "nameAsc": "Name A-Z",
+      "nameDesc": "Name Z-A",
+      "qtyDesc": "Most copies",
+      "qtyAsc": "Least copies",
+      "recent": "Most recent"
     },
     "modal": {
       "add": "Add to Inventory",
@@ -122,7 +196,11 @@
       "carouselFull": "Carousel is full (10/10)",
       "condition": "Condition",
       "edition": "Edition",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "addToDeck": "Add to deck",
+      "noDecks": "No decks yet. Create one in Deck Builder.",
+      "deckMax": "×3 max",
+      "sectionFull": "Section full"
     },
     "conditions": {
       "mint": "Mint",

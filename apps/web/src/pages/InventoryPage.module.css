@@ -16,11 +16,12 @@
 }
 
 .title {
+  font-family: var(--font-ygo);
   font-size: 1.5rem;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--color-white);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
   margin: 0;
 }
 
@@ -37,7 +38,14 @@
   color: var(--color-muted);
 }
 
-/* ── Search ──────────────────────────────────── */
+/* ── Search + Sort row ───────────────────────── */
+.toolRow {
+  display: flex;
+  gap: var(--space-3, 0.75rem);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 .searchWrapper {
   position: relative;
   width: 100%;
@@ -80,5 +88,28 @@
 }
 
 .clearBtn:hover {
+  color: var(--color-white);
+}
+
+.sortSelect {
+  background: var(--surface-panel);
+  border: var(--border-hud);
+  border-radius: var(--radius-sm);
+  color: var(--color-muted);
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  padding: 9px 28px 9px 12px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2313b8ff' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 9px center;
+  transition: border-color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.sortSelect:focus {
+  outline: none;
+  border-color: var(--color-cyan-hud);
   color: var(--color-white);
 }

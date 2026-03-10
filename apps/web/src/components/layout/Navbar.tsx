@@ -58,11 +58,7 @@ export function Navbar() {
           <ul className="list-none m-0 p-0">
             {NAV_LINKS.map(link => (
               <li key={link.to}>
-                <NavLink
-                  to={link.to}
-                  className={linkClass}
-                  onClick={() => setMenuOpen(false)}
-                >
+                <NavLink to={link.to} className={linkClass} onClick={() => setMenuOpen(false)}>
                   {link.label}
                 </NavLink>
               </li>

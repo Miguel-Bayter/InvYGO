@@ -107,7 +107,13 @@ function getPosition(
   return { left, top, width: effectiveW }
 }
 
-export function CardTooltip({ card, anchorRect, preferRight = false, onClose, onCancelClose }: Props) {
+export function CardTooltip({
+  card,
+  anchorRect,
+  preferRight = false,
+  onClose,
+  onCancelClose,
+}: Props) {
   const { t } = useTranslation()
   const [closing, setClosing] = useState(false)
   const image = card.images[0]

@@ -1,127 +1,30 @@
-/* ── Tooltip shell ── */
-
-.tooltip {
+/* ── Card item shell ── */
+.card {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  position: fixed;
-  z-index: 9999;
-  width: 500px;       /* default — overridden inline by getPosition */
-  max-width: calc(100vw - 16px);
-  height: 356px;
-
   background: rgba(6, 18, 32, 0.98);
-  border: 1px solid rgba(19, 184, 255, 0.28);
+  border: 1px solid rgba(19, 184, 255, 0.22);
   border-radius: var(--radius-md);
-  box-shadow:
-    0 28px 72px rgba(0, 0, 0, 0.82),
-    0 0 32px rgba(19, 184, 255, 0.06),
-    inset 0 1px 0 rgba(19, 184, 255, 0.1);
-
   overflow: hidden;
-  animation: tooltipIn 0.14s ease;
+  transition: border-color var(--transition-base);
 }
 
-/* ── Mobile close button ────────────────────── */
-.mobileCloseBtn {
-  display: none; /* hidden on desktop */
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: rgba(232, 244, 248, 0.8);
-  font-size: 0.75rem;
-  cursor: pointer;
-  z-index: 1;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--transition-fast);
-}
-
-.mobileCloseBtn:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Show on touch-only devices */
-@media (hover: none) {
-  .mobileCloseBtn {
-    display: flex;
-  }
-}
-
-/* ── Responsive tooltip ─────────────────────── */
-
-/* Tablet: auto height, slightly shorter description */
-@media (max-width: 768px) {
-  .tooltip {
-    height: auto;
-    max-height: min(356px, 80vh);
-  }
-  .descriptionWrap {
-    max-height: 110px;
-  }
-}
-
-/* Mobile (<540px): centered, no image, scrollable, compact */
-@media (max-width: 539px) {
-  .tooltip {
-    height: auto;
-    max-height: min(380px, 72vh);
-    overflow-y: auto;
-  }
-  .imageCol {
-    display: none;
-  }
-  .layout {
-    padding: var(--space-3);
-  }
-  .name {
-    font-size: 0.88rem;
-  }
-  .descriptionWrap {
-    max-height: none;
-  }
-}
-
-@keyframes tooltipIn {
-  from {
-    opacity: 0;
-    transform: scale(0.96) translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-@keyframes tooltipOut {
-  to {
-    opacity: 0;
-    transform: scale(0.97) translateY(4px);
-  }
-}
-
-.tooltipClosing {
-  animation: tooltipOut 0.11s ease forwards;
-  pointer-events: none;
+.card:hover {
+  border-color: rgba(19, 184, 255, 0.5);
 }
 
 /* ── Main layout: image | content ── */
-
 .layout {
   display: flex;
   gap: var(--space-3);
-  padding: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  min-height: 0;
 }
 
 /* ── Image column ── */
-
 .imageCol {
   flex-shrink: 0;
+  position: relative;
 }
 
 .image {
@@ -145,8 +48,32 @@
   color: rgba(19, 184, 255, 0.25);
 }
 
-/* ── Content column ── */
+/* Quantity badge over image (same design as InventoryCardTile) */
+.badge {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  min-width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  padding: 0 6px;
+  background: #0a0a0a;
+  border: 2px solid #e74c3c;
+  color: #f5a623;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow:
+    0 0 0 1px #8b0000,
+    0 3px 8px rgba(0, 0, 0, 0.7);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
 
+/* ── Content column ── */
 .contentCol {
   flex: 1;
   min-width: 0;
@@ -163,13 +90,11 @@
 }
 
 .name {
-  font-family: var(--font-ygo);
-  font-size: 0.92rem;
+  font-size: 0.96rem;
   font-weight: 700;
   color: #e8f4f8;
   line-height: 1.3;
   margin: 0;
-  letter-spacing: 0.03em;
 }
 
 .badges {
@@ -209,10 +134,9 @@
 }
 
 .typeLine {
-  font-family: var(--font-ygo-text);
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   color: rgba(232, 244, 248, 0.9);
-  font-weight: 600;
+  font-weight: 700;
   margin: 0;
 }
 
@@ -222,22 +146,18 @@
   margin: 0;
 }
 
-/* ── Description — scrollable ── */
-
 .descriptionWrap {
   flex: 1;
   overflow-y: auto;
-  max-height: 152px;
+  max-height: 120px;
   padding-right: 6px;
-  /* prevent the scrollbar from pushing content */
   margin-right: -6px;
 }
 
 .description {
-  font-family: var(--font-ygo-text);
-  font-size: 0.82rem;
+  font-size: 0.74rem;
   color: rgba(232, 244, 248, 0.78);
-  line-height: 1.6;
+  line-height: 1.65;
   margin: 0;
   white-space: pre-line;
 }
@@ -245,18 +165,15 @@
 .descriptionWrap::-webkit-scrollbar {
   width: 3px;
 }
-
 .descriptionWrap::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .descriptionWrap::-webkit-scrollbar-thumb {
   background: rgba(19, 184, 255, 0.3);
   border-radius: 2px;
 }
 
-/* ── Footer: ATK/DEF + price ── */
-
+/* ── Footer: ATK/DEF + price + actions ── */
 .footer {
   display: flex;
   align-items: center;
@@ -264,7 +181,16 @@
   padding: var(--space-2) var(--space-4);
   border-top: 1px solid rgba(19, 184, 255, 0.12);
   background: rgba(0, 0, 0, 0.25);
-  min-height: 40px;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.statsAndPrice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .stats {
@@ -286,4 +212,78 @@
   font-size: 0.78rem;
   color: rgba(232, 244, 248, 0.45);
   letter-spacing: 0.02em;
+}
+
+.missingBadge {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--color-amber-alert);
+}
+
+/* ── Stepper + remove ── */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stepBtn {
+  width: 24px;
+  height: 24px;
+  background: rgba(19, 184, 255, 0.08);
+  border: var(--border-hud);
+  border-radius: 3px;
+  color: var(--color-cyan-hud);
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.stepBtn:hover:not(:disabled) {
+  background: rgba(19, 184, 255, 0.2);
+  border-color: var(--color-cyan-hud);
+}
+
+.stepBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.qty {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-white);
+  min-width: 14px;
+  text-align: center;
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  font-size: 0.78rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  line-height: 1;
+  transition: color var(--transition-fast);
+}
+
+.removeBtn:hover {
+  color: var(--color-red-warning);
 }

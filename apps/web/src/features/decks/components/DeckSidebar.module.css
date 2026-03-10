@@ -1,0 +1,183 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 200px;
+  max-width: 220px;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: var(--space-2);
+  border-bottom: var(--border-hud);
+}
+
+.title {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-muted);
+}
+
+.newBtn {
+  background: rgba(19, 184, 255, 0.1);
+  border: var(--border-hud);
+  border-radius: var(--radius-sm);
+  color: var(--color-cyan-hud);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.newBtn:hover {
+  background: rgba(19, 184, 255, 0.2);
+  border-color: var(--color-cyan-hud);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
+}
+
+.deckItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: var(--border-hud);
+  background: var(--surface-card);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.deckItem:hover {
+  border-color: rgba(19, 184, 255, 0.5);
+}
+
+.deckItemActive {
+  border-color: var(--color-cyan-hud);
+  background: rgba(19, 184, 255, 0.08);
+}
+
+.deckName {
+  font-family: var(--font-ygo);
+  flex: 1;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  letter-spacing: 0.02em;
+}
+
+.deckCount {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--color-muted);
+  flex-shrink: 0;
+}
+
+.deckCountOk {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #76bc8c;
+  flex-shrink: 0;
+}
+
+.deckCountWarn {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--color-amber-alert);
+  flex-shrink: 0;
+}
+
+.deckActions {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.iconBtn {
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  line-height: 1;
+  transition: color var(--transition-fast);
+}
+
+.iconBtn:hover {
+  color: var(--color-white);
+}
+
+.iconBtnDanger:hover {
+  color: var(--color-red-warning);
+}
+
+.iconBtnConfirm {
+  color: #76bc8c;
+}
+
+.iconBtnConfirm:hover {
+  color: #9ddbb4;
+}
+
+.deckItemDanger {
+  border-color: rgba(231, 76, 60, 0.5);
+  background: rgba(231, 76, 60, 0.06);
+  cursor: default;
+}
+
+.confirmLabel {
+  flex: 1;
+  font-size: 0.7rem;
+  color: var(--color-red-warning);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.renameInput {
+  flex: 1;
+  background: var(--surface-panel);
+  border: 1px solid var(--color-cyan-hud);
+  border-radius: var(--radius-sm);
+  color: var(--color-white);
+  font-size: 0.82rem;
+  padding: 2px 6px;
+  min-width: 0;
+}
+
+.renameInput:focus {
+  outline: none;
+}
+
+.emptyHint {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  text-align: center;
+  padding: var(--space-4);
+}

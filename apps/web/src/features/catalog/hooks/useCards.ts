@@ -190,8 +190,12 @@ async function fetchCardsWithClientFrameFilters(
 
   const cacheKey = toCacheKey(params, criteria)
   const cached = clientFilterCache.get(cacheKey)
-  const acc: ClientFilterAccumulator =
-    cached ?? { matched: [], nextApiPage: 1, totalApiPages: 1, exhausted: false }
+  const acc: ClientFilterAccumulator = cached ?? {
+    matched: [],
+    nextApiPage: 1,
+    totalApiPages: 1,
+    exhausted: false,
+  }
   const seenIds = new Set(acc.matched.map(card => card.id))
 
   let stoppedByRateLimit = false
@@ -246,12 +250,7 @@ async function fetchCardsWithClientFrameFilters(
 
   // Token is the sparsest type. If the regular scan did not find enough results,
   // try a small focused fallback query by name once.
-  if (
-    frameType === 'token' &&
-    !criteria.name &&
-    !hideTokens &&
-    acc.matched.length < needed
-  ) {
+  if (frameType === 'token' && !criteria.name && !hideTokens && acc.matched.length < needed) {
     try {
       const tokenBatch = await fetchCardsWithRetry(
         {

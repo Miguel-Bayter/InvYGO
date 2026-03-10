@@ -5,7 +5,13 @@ import type { Card } from '../../catalog/types'
 import { useInventory } from '../context'
 import { useCarousel } from '../../carousel/context'
 import { CAROUSEL_MAX_ITEMS } from '../../carousel/defaults'
+import { useDecks } from '../../decks/context'
+import type { DeckSection } from '../../decks/types'
+import { isExtraDeckCard, DECK_LIMITS } from '../../decks/types'
+import { useToast } from '../../../components/ui/ToastProvider'
 import styles from './AddToInventoryModal.module.css'
+
+const DECK_SECTIONS: DeckSection[] = ['main', 'extra', 'side']
 
 interface Props {
   card: Card
@@ -14,14 +20,21 @@ interface Props {
 
 export function AddToInventoryModal({ card, onClose }: Props) {
   const { t } = useTranslation()
+  const { showToast } = useToast()
   const { getItem, addOrUpdate, remove } = useInventory()
   const { state, addCard, hasCard } = useCarousel()
+  const { decks, addCard: addCardToDeck } = useDecks()
   const existing = getItem(card.id)
   const inCarousel = hasCard(card.id)
   const carouselIsFull = state.cards.length >= CAROUSEL_MAX_ITEMS
 
+  const deckList = Object.values(decks)
   const [quantity, setQuantity] = useState(existing?.quantity ?? 1)
-
+  const [selectedDeckId, setSelectedDeckId] = useState<string>(() => deckList[0]?.id ?? '')
+  const cardIsExtra = isExtraDeckCard(card)
+  const [selectedSection, setSelectedSection] = useState<DeckSection>(
+    cardIsExtra ? 'extra' : 'main'
+  )
   const overlayRef = useRef<HTMLDivElement>(null)
   const image = card.images[0]
 
@@ -46,6 +59,34 @@ export function AddToInventoryModal({ card, onClose }: Props) {
 
   function handleAddToCarousel() {
     addCard({ card })
+  }
+
+  function handleAddToDeck() {
+    if (!selectedDeckId) return
+    const deck = decks[selectedDeckId]
+    const result = addCardToDeck(selectedDeckId, card, selectedSection, quantity)
+    if (result === 'ok') {
+      showToast(t('decks.toast.added', { name: card.name, deck: deck?.name ?? '' }), 'success')
+    } else if (result === 'maxCopies') {
+      const copies = deck
+        ? deck.entries.filter(e => e.cardId === card.id).reduce((sum, e) => sum + e.quantity, 0)
+        : 0
+      showToast(t('decks.toast.maxCopies', { name: card.name, count: copies }), 'warning')
+    } else if (result === 'sectionFull') {
+      const sectionTotal = deck
+        ? deck.entries
+            .filter(e => e.section === selectedSection)
+            .reduce((sum, e) => sum + e.quantity, 0)
+        : 0
+      showToast(
+        t('decks.toast.sectionFull', {
+          section: t(`decks.section.${selectedSection}`),
+          current: sectionTotal,
+          max: DECK_LIMITS[selectedSection].max,
+        }),
+        'error'
+      )
+    }
   }
 
   function handleRemove() {
@@ -132,6 +173,53 @@ export function AddToInventoryModal({ card, onClose }: Props) {
                   ? t('inventory.modal.carouselFull')
                   : t('inventory.modal.addToCarousel')}
             </button>
+          </div>
+
+          {/* Add to Deck */}
+          <div className={styles.field}>
+            <label className={styles.label}>{t('inventory.modal.addToDeck')}</label>
+            {deckList.length === 0 ? (
+              <p className={styles.deckHint}>{t('inventory.modal.noDecks')}</p>
+            ) : (
+              <div className={styles.deckRow}>
+                <select
+                  className={styles.select}
+                  value={selectedDeckId}
+                  onChange={e => {
+                    setSelectedDeckId(e.target.value)
+                  }}
+                >
+                  {deckList.map(deck => (
+                    <option key={deck.id} value={deck.id}>
+                      {deck.name}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  className={`${styles.select} ${styles.selectSection}`}
+                  value={selectedSection}
+                  onChange={e => {
+                    setSelectedSection(e.target.value as DeckSection)
+                  }}
+                >
+                  {DECK_SECTIONS.map(s => {
+                    const disabled =
+                      (s === 'main' && cardIsExtra) || (s === 'extra' && !cardIsExtra)
+                    return (
+                      <option key={s} value={s} disabled={disabled}>
+                        {t(`decks.section.${s}`)}
+                        {disabled
+                          ? ` (${t(cardIsExtra ? 'decks.search.extraOnly' : 'decks.search.mainOnly')})`
+                          : ''}
+                      </option>
+                    )
+                  })}
+                </select>
+                <button type="button" className={styles.deckAddBtn} onClick={handleAddToDeck}>
+                  +
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Actions */}

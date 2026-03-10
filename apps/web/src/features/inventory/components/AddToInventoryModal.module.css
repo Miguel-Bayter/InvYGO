@@ -29,12 +29,13 @@
 }
 
 .title {
+  font-family: var(--font-ygo);
   font-size: 1rem;
   font-weight: 700;
   color: var(--color-white);
   margin: 0;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .closeBtn {
@@ -81,11 +82,13 @@
 }
 
 .cardName {
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-family: var(--font-ygo);
+  font-size: 0.84rem;
+  font-weight: 700;
   color: var(--color-white);
   text-align: center;
   margin: 0;
+  letter-spacing: 0.02em;
 }
 
 /* ── Form ────────────────────────────────────── */
@@ -190,6 +193,72 @@
 .select:focus {
   outline: none;
   border-color: var(--color-cyan-hud);
+}
+
+/* ── Add to deck ─────────────────────────────── */
+.deckHint {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  margin: 0;
+  font-style: italic;
+}
+
+.deckRow {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.deckRow .select {
+  flex: 1;
+  min-width: 0;
+}
+
+.selectSection {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.deckAddBtn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: var(--border-hud);
+  background: rgba(19, 184, 255, 0.1);
+  color: var(--color-cyan-hud);
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.deckAddBtn:hover:not(:disabled) {
+  background: rgba(19, 184, 255, 0.22);
+  border-color: var(--color-cyan-hud);
+}
+
+.deckAddBtnDone {
+  background: rgba(118, 188, 140, 0.2);
+  border-color: rgba(118, 188, 140, 0.5);
+  color: #76bc8c;
+  cursor: default;
+}
+
+.deckAddBtnMax {
+  background: rgba(255, 93, 93, 0.12);
+  border-color: rgba(255, 93, 93, 0.4);
+  color: var(--color-red-warning);
+  font-size: 0.6rem;
+  letter-spacing: -0.03em;
+  width: auto;
+  padding: 0 6px;
 }
 
 .carouselBtn {

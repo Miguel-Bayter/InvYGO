@@ -96,8 +96,7 @@ export function CarouselProvider({ children }: { children: ReactNode }) {
   )
 
   const value = useMemo(
-    () => ({ state, addCard, removeCard, moveCard, resetDefaults, setInnerStyle, setOuterFace, hasCard }),
-    [
+    () => ({
       state,
       addCard,
       removeCard,
@@ -106,7 +105,8 @@ export function CarouselProvider({ children }: { children: ReactNode }) {
       setInnerStyle,
       setOuterFace,
       hasCard,
-    ]
+    }),
+    [state, addCard, removeCard, moveCard, resetDefaults, setInnerStyle, setOuterFace, hasCard]
   )
 
   return <CarouselContext.Provider value={value}>{children}</CarouselContext.Provider>

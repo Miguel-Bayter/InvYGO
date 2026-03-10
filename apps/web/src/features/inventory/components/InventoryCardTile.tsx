@@ -137,7 +137,10 @@ export function InventoryCardTile({ item }: Props) {
           <span
             className={`${styles.badge} ${item.quantity > 99 ? styles.badgeWide : ''}`}
             onClick={handleBadgeTap}
-            onTouchStart={e => { e.stopPropagation(); handleBadgeTap(e) }}
+            onTouchStart={e => {
+              e.stopPropagation()
+              handleBadgeTap(e)
+            }}
             role="button"
             aria-label="Edit inventory entry"
           >
@@ -157,9 +160,7 @@ export function InventoryCardTile({ item }: Props) {
           )}
       </article>
 
-      {showModal && (
-        <AddToInventoryModal card={item.card} onClose={() => setShowModal(false)} />
-      )}
+      {showModal && <AddToInventoryModal card={item.card} onClose={() => setShowModal(false)} />}
     </>
   )
 }

@@ -123,7 +123,10 @@ export function CardTile({ card }: Props) {
           <button
             className={`${styles.addBtn} ${inInventory ? styles.addBtnActive : ''}`}
             onClick={handleAddClick}
-            onTouchStart={e => { e.stopPropagation(); handleAddClick(e) }}
+            onTouchStart={e => {
+              e.stopPropagation()
+              handleAddClick(e)
+            }}
             aria-label="Add to inventory"
           >
             {inInventory ? '✓' : '+'}
@@ -142,9 +145,7 @@ export function CardTile({ card }: Props) {
           )}
       </article>
 
-      {showModal && (
-        <AddToInventoryModal card={card} onClose={() => setShowModal(false)} />
-      )}
+      {showModal && <AddToInventoryModal card={card} onClose={() => setShowModal(false)} />}
     </>
   )
 }

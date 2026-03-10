@@ -100,69 +100,73 @@ Definition of Done:
 
 ---
 
-## Sprint 4 (2026-03-16 al 2026-03-20) - Inventario por usuario v1
+## Sprint 4 (2026-03-16 al 2026-03-20) - Inventario por usuario v1 ✓ COMPLETADO
 
 Objetivo: registrar cartas fisicas del usuario.
 
 Checklist:
 
-- [ ] Implementar flujo "Agregar a inventario" desde card tile.
-- [ ] Crear vista "Mi inventario" en modo galeria.
-- [ ] Editar cantidad por carta.
-- [ ] Guardar metadatos minimos (condicion/edicion).
-- [ ] Validaciones de negocio (cantidad positiva).
+- [x] Implementar flujo "Agregar a inventario" desde card tile.
+- [x] Crear vista "Mi inventario" en modo galeria.
+- [x] Editar cantidad por carta.
+- [x] Guardar metadatos minimos (condicion/edicion) — tipos implementados, selector UI pendiente Sprint 6.
+- [x] Validaciones de negocio (cantidad positiva).
 
 Entregables:
 
-- Inventario personal funcional en frontend.
+- Inventario personal funcional en frontend. ✓
 
 Definition of Done:
 
-- Usuario puede agregar, ver y editar cartas en inventario.
+- Usuario puede agregar, ver y editar cartas en inventario. ✓
 
 ---
 
-## Sprint 5 (2026-03-23 al 2026-03-27) - Deck Builder v1 + faltantes integrados
+## Sprint 5 (2026-03-23 al 2026-03-27) - Deck Builder v1 + faltantes integrados ✓ COMPLETADO
 
 Objetivo: crear decks, poblarlos con cartas y visualizar faltantes sin salir del builder.
 
 Checklist:
 
-- [ ] Crear/eliminar/renombrar deck.
-- [ ] Agregar cartas al deck por seccion (`main`, `extra`, `side`).
-- [ ] Editar cantidades dentro del deck.
-- [ ] Mostrar resumen por seccion + panel integrado de faltantes.
-- [ ] Persistir estado del deck.
+- [x] Crear/eliminar/renombrar deck.
+- [x] Agregar cartas al deck por seccion (`main`, `extra`, `side`) via modal de busqueda integrado.
+- [x] Editar cantidades dentro del deck (stepper con limite 3 copias).
+- [x] Mostrar resumen por seccion + panel integrado de faltantes con barra de cobertura.
+- [x] Persistir estado del deck en localStorage.
 
 Entregables:
 
-- Deck builder usable end-to-end para un deck, con faltantes visibles en el mismo flujo.
+- Deck builder usable end-to-end para un deck, con faltantes visibles en el mismo flujo. ✓
 
 Definition of Done:
 
-- Usuario arma un deck completo, ve faltantes en tiempo real y lo guarda.
+- Usuario arma un deck completo, ve faltantes en tiempo real y lo guarda. ✓
 
 ---
 
-## Sprint 6 (2026-03-30 al 2026-04-03) - Refinamiento de Deck Builder y cobertura
+## Sprint 6 (2026-03-30 al 2026-04-03) - Refinamiento de Deck Builder y cobertura ✓ COMPLETADO
 
 Objetivo: mejorar la experiencia del panel de cobertura/faltantes integrado en Deck Builder.
 
 Checklist:
 
-- [ ] Mejorar calculo y presentacion de faltantes por carta dentro del builder.
-- [ ] Mejorar orden/prioridades y densidad visual del panel integrado.
-- [ ] Ajustar indicador de porcentaje de completitud del deck.
-- [ ] Mensajes de estado (completo/parcial/incompleto) en contexto de armado.
-- [ ] Ajustes UX de lectura rapida y acciones rapidas de edicion.
+- [x] Mejorar calculo y presentacion de faltantes por carta dentro del builder — ratio owned/needed, colores por criticidad (rojo = 0 copias, ambar = parcial).
+- [x] Mejorar orden/prioridades y densidad visual del panel integrado — agrupado por seccion Main/Extra/Side.
+- [x] Ajustar indicador de porcentaje de completitud del deck — barra de cobertura con %.
+- [x] Mensajes de estado (completo/parcial/incompleto) en contexto de armado — chip VALIDO/INCOMPLETO/INVALIDO en header del builder.
+- [x] Ajustes UX de lectura rapida y acciones rapidas de edicion — badge de faltantes en vista galeria, clonar deck, toast info en auto-redirect.
+- [x] Fuente YGO (Cinzel + Crimson Pro) aplicada en toda la app — nombres de carta, titulos, texto de efecto.
+- [x] Condicion/edicion en inventario — cancelado a pedido del usuario (UI demasiado compleja para MVP).
 
 Entregables:
 
-- Deck Builder refinado con cobertura/faltantes integrada y conectado a inventario.
+- Deck Builder refinado con cobertura/faltantes integrada y conectado a inventario. ✓
+- Identidad visual YGO aplicada a toda la tipografia de la app. ✓
 
 Definition of Done:
 
-- Se visualiza correctamente que cartas faltan y cuantas copias sin usar una seccion aparte.
+- Se visualiza correctamente que cartas faltan y cuantas copias sin usar una seccion aparte. ✓
+- Typecheck y lint en verde. ✓
 
 ---
 

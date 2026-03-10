@@ -1,0 +1,61 @@
+.stack {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.toast {
+  max-width: 360px;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+  animation: slideIn 0.22s ease forwards;
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  line-height: 1.4;
+}
+
+.success {
+  background: rgba(0, 200, 80, 0.12);
+  border: 1px solid rgba(0, 200, 80, 0.4);
+  color: #00c850;
+}
+
+.error {
+  background: rgba(255, 60, 60, 0.12);
+  border: 1px solid rgba(255, 60, 60, 0.4);
+  color: #ff5555;
+}
+
+.warning {
+  background: rgba(255, 176, 32, 0.12);
+  border: 1px solid rgba(255, 176, 32, 0.4);
+  color: var(--color-amber-alert, #ffb020);
+}
+
+.info {
+  background: rgba(19, 184, 255, 0.1);
+  border: 1px solid rgba(19, 184, 255, 0.35);
+  color: var(--color-cyan-hud, #13b8ff);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(24px) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+}

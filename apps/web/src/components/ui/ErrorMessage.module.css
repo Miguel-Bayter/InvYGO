@@ -14,15 +14,16 @@
 }
 
 .title {
-  font-family: var(--font-mono);
+  font-family: var(--font-ygo);
   font-size: 1rem;
   font-weight: 700;
   color: var(--color-amber-alert);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.06em;
 }
 
 .message {
-  font-size: 0.875rem;
+  font-family: var(--font-ygo-text);
+  font-size: 0.95rem;
   color: var(--color-muted);
   max-width: 400px;
   line-height: 1.6;

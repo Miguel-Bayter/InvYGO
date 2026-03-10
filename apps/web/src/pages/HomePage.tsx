@@ -1,10 +1,9 @@
-import { useState, type CSSProperties } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import carruselBg from '@/assets/carrusel.jpg'
 import carruselModel from '@/assets/carrusel-removebg.png'
-import reverseClassic from '@/assets/reverse/reverse-classic.jpg'
-import reverseAnime from '@/assets/reverse/reverse-anime.jpg'
+import { CardCarousel } from '@/features/carousel/components/CardCarousel'
 import { useCarousel } from '@/features/carousel/context'
 import { CAROUSEL_MIN_ITEMS } from '@/features/carousel/defaults'
 import styles from './HomePage.module.css'
@@ -14,46 +13,18 @@ export function HomePage() {
   const { state, moveCard, removeCard, resetDefaults, setInnerStyle, setOuterFace } = useCarousel()
   const [isConfigOpen, setIsConfigOpen] = useState(false)
 
-  const reverseTexture = state.innerStyle === 'anime' ? reverseAnime : reverseClassic
-
   return (
     <div className={styles.page}>
       <div
         className={styles.banner}
         style={{ ['--hero-bg' as string]: `url(${carruselBg})` } as CSSProperties}
       >
-        <div
-          className={styles.slider}
-          style={{ ['--quantity' as string]: state.cards.length } as CSSProperties}
-        >
-          {state.cards.map((card, index) => (
-            <div
-              key={card.id}
-              className={styles.item}
-              style={
-                {
-                  ['--position' as string]: index + 1,
-                  ['--reverse-bg' as string]: `url(${reverseTexture})`,
-                } as CSSProperties
-              }
-            >
-              {state.outerFace === 'reverse' ? (
-                <>
-                  <div className={`${styles.cardFace} ${styles.faceFront} ${styles.reverseFace}`} />
-                  <div className={`${styles.cardFace} ${styles.faceBack} ${styles.artFace}`}>
-                    <img src={card.imageUrl} alt={card.name} />
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className={`${styles.cardFace} ${styles.faceFront} ${styles.artFace}`}>
-                    <img src={card.imageUrl} alt={card.name} />
-                  </div>
-                  <div className={`${styles.cardFace} ${styles.faceBack} ${styles.reverseFace}`} />
-                </>
-              )}
-            </div>
-          ))}
+        <div className={styles.carouselWrapper}>
+          <CardCarousel
+            cards={state.cards}
+            innerStyle={state.innerStyle}
+            outerFace={state.outerFace}
+          />
         </div>
 
         <div className={styles.content}>

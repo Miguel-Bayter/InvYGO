@@ -20,7 +20,8 @@ export function CatalogPage() {
   const { t } = useTranslation()
   const [view, setView] = useState<ViewMode>('gallery')
 
-  const { filters, page, setFilter, setPage, clearFilters, activeFiltersCount } = useCatalogFilters()
+  const { filters, page, setFilter, setPage, clearFilters, activeFiltersCount } =
+    useCatalogFilters()
 
   const { data, isLoading, isFetching, isError, error, refetch, isDebouncing } = useCards({
     filters,
@@ -96,16 +97,22 @@ export function CatalogPage() {
         ) : isError ? (
           <ErrorMessage
             title={
-              errType === 'network'     ? t('ui.error.connectionTitle') :
-              errType === 'rateLimit'   ? t('ui.error.rateLimitTitle') :
-              errType === 'unavailable' ? t('ui.error.serviceUnavailableTitle') :
-                                         t('ui.error.loadCardsTitle')
+              errType === 'network'
+                ? t('ui.error.connectionTitle')
+                : errType === 'rateLimit'
+                  ? t('ui.error.rateLimitTitle')
+                  : errType === 'unavailable'
+                    ? t('ui.error.serviceUnavailableTitle')
+                    : t('ui.error.loadCardsTitle')
             }
             message={
-              errType === 'network'     ? t('ui.error.connectionMessage') :
-              errType === 'rateLimit'   ? t('ui.error.rateLimitMessage') :
-              errType === 'unavailable' ? t('ui.error.serviceUnavailableMessage') :
-                                         t('ui.error.loadCardsMessage')
+              errType === 'network'
+                ? t('ui.error.connectionMessage')
+                : errType === 'rateLimit'
+                  ? t('ui.error.rateLimitMessage')
+                  : errType === 'unavailable'
+                    ? t('ui.error.serviceUnavailableMessage')
+                    : t('ui.error.loadCardsMessage')
             }
             onRetry={() => void refetch()}
           />
