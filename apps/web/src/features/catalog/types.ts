@@ -57,6 +57,11 @@ export interface RawCardsResponse {
   }
 }
 
+// Single-resource endpoint: GET /cards/:id  (standard JSON:API)
+export interface RawSingleCardResponse {
+  data: RawCardItem
+}
+
 // ─── Normalized domain types used by the UI ───────────────────────────────────
 
 export interface CardImage {
@@ -105,6 +110,7 @@ export interface CardsResult {
 // ─── Query params ─────────────────────────────────────────────────────────────
 
 export interface CardsQueryParams {
+  id?: string
   name?: string
   fuzzyName?: string
   attribute?: string

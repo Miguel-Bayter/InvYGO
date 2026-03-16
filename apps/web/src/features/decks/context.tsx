@@ -16,6 +16,7 @@ interface DecksContextValue {
   cloneDeck: (deckId: string) => string
   deleteDeck: (deckId: string) => void
   renameDeck: (deckId: string, name: string) => void
+  importDeck: (data: Omit<Deck, 'id'>) => string
   setActiveDeck: (deckId: string | null) => void
   addCard: (deckId: string, card: Card, section: DeckSection, qty?: number) => AddCardResult
   removeCard: (deckId: string, cardId: string, section: DeckSection) => void
@@ -121,6 +122,28 @@ export function DecksProvider({ children }: { children: ReactNode }) {
         [deckId]: { ...deck, name: name.trim() || deck.name, updatedAt: new Date().toISOString() },
       }
       persistDecks(next)
+    },
+    [decks, persistDecks]
+  )
+
+  const importDeck = useCallback(
+    (data: Omit<Deck, 'id'>): string => {
+      const id = generateId()
+      const now = new Date().toISOString()
+      const existingNames = new Set(Object.values(decks).map(d => d.name))
+      const baseName = data.name.trim() || 'Imported Deck'
+      let uniqueName = baseName
+      if (existingNames.has(uniqueName)) {
+        let counter = 2
+        while (existingNames.has(`${baseName} ${counter}`)) counter++
+        uniqueName = `${baseName} ${counter}`
+      }
+      const deck: Deck = { ...data, id, name: uniqueName, createdAt: now, updatedAt: now }
+      const next = { ...decks, [id]: deck }
+      persistDecks(next)
+      setActiveDeckIdState(id)
+      saveActiveDeckId(id)
+      return id
     },
     [decks, persistDecks]
   )
@@ -242,6 +265,7 @@ export function DecksProvider({ children }: { children: ReactNode }) {
         cloneDeck,
         deleteDeck,
         renameDeck,
+        importDeck,
         setActiveDeck,
         addCard,
         removeCard,

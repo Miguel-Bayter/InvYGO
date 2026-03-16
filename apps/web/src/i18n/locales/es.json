@@ -124,7 +124,17 @@
     "builder": {
       "addCard": "Agregar carta",
       "updated": "Actualizado {{date}}",
-      "emptySection": "Sin cartas en esta sección."
+      "emptySection": "Sin cartas en esta sección.",
+      "exportJson": "JSON",
+      "exportYdk": "YDK",
+      "import": "Importar",
+      "importJson": "JSON",
+      "importYdk": "YDK",
+      "importing": "Importando...",
+      "importSuccess": "Deck importado: {{name}}",
+      "importError": "Archivo inválido. Verificá el formato.",
+      "importYdkNoCards": "No se encontraron cartas. Verificá que la API soporte búsqueda por ID.",
+      "importYdkPartial": "{{imported}}/{{total}} cartas importadas · algunas no se encontraron"
     },
     "entry": {
       "missing": "−{{count}} faltante",
@@ -147,7 +157,9 @@
       "extraOnly": "solo extra deck",
       "mainOnly": "solo deck principal",
       "extraAutoRedirect": "Fusion/Synchro/XYZ/Link → se mandan al Extra",
-      "mainAutoRedirect": "Esta carta no puede ir al Extra → se manda al Principal"
+      "mainAutoRedirect": "Esta carta no puede ir al Extra → se manda al Principal",
+      "filters": "Filtros",
+      "clearFilters": "Limpiar"
     },
     "toast": {
       "added": "{{name}} agregada a {{deck}}",
@@ -165,7 +177,8 @@
       "allGood": "✓ Tenés todas las cartas del deck.",
       "coverage": "Cobertura de inventario",
       "critical": "sin copias",
-      "partial": "parcial"
+      "partial": "parcial",
+      "searchInCatalog": "Buscar en catálogo"
     }
   },
   "inventory": {

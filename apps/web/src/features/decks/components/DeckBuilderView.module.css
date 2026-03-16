@@ -59,8 +59,38 @@
   background: rgba(255, 93, 93, 0.08);
 }
 
-.addCardBtn {
+.actions {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.actionBtn {
+  background: none;
+  border: var(--border-hud);
+  border-radius: var(--radius-sm);
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 6px 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.actionBtn:hover {
+  color: var(--color-white);
+  border-color: rgba(19, 184, 255, 0.4);
+}
+
+.importInput {
+  display: none;
+}
+
+.addCardBtn {
   background: var(--color-cyan-hud);
   border: none;
   border-radius: var(--radius-sm);
