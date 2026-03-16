@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import type { Deck, DeckSection } from '../types'
 import { useInventory } from '../../inventory/context'
 import styles from './MissingCardsPanel.module.css'
@@ -21,7 +22,12 @@ interface Props {
 
 export function MissingCardsPanel({ deck }: Props) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { getItem } = useInventory()
+
+  function handleRowClick(cardName: string) {
+    navigate(`/catalog?name=${encodeURIComponent(cardName)}`)
+  }
 
   const { missingList, totalCards, ownedCards, totalMissing } = useMemo(() => {
     const list: MissingEntry[] = []
@@ -95,14 +101,19 @@ export function MissingCardsPanel({ deck }: Props) {
               {items.map(item => {
                 const isCritical = item.owned === 0
                 return (
-                  <div key={`${item.cardId}_${item.section}`} className={styles.row}>
+                  <button
+                    key={`${item.cardId}_${item.section}`}
+                    className={styles.row}
+                    onClick={() => handleRowClick(item.name)}
+                    title={t('decks.missing.searchInCatalog')}
+                  >
                     <span className={styles.cardName}>{item.name}</span>
                     <span
                       className={`${styles.ratio} ${isCritical ? styles.ratioCritical : styles.ratioPartial}`}
                     >
                       {item.owned}/{item.needed}
                     </span>
-                  </div>
+                  </button>
                 )
               })}
             </div>

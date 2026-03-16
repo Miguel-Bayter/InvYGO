@@ -5,6 +5,7 @@ import type { DeckSection } from '../types'
 import { DECK_LIMITS, isExtraDeckCard } from '../types'
 import { fetchCards } from '../../catalog/api'
 import type { Card } from '../../catalog/types'
+import { ATTRIBUTES, ALL_RACES, LEVELS } from '../../catalog/constants'
 import { useToast } from '../../../components/ui/ToastProvider'
 import styles from './CardSearchModal.module.css'
 
@@ -25,9 +26,21 @@ export function CardSearchModal({ deckId, onClose }: Props) {
   const [section, setSection] = useState<DeckSection>('main')
   const [cards, setCards] = useState<Card[]>([])
   const [loading, setLoading] = useState(false)
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  const [attribute, setAttribute] = useState('')
+  const [race, setRace] = useState('')
+  const [level, setLevel] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
   const abortRef = useRef<AbortController | null>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const hasActiveFilters = attribute !== '' || race !== '' || level !== ''
+
+  function clearFilters() {
+    setAttribute('')
+    setRace('')
+    setLevel('')
+  }
 
   const deck = decks[deckId]
 
@@ -43,7 +56,7 @@ export function CardSearchModal({ deckId, onClose }: Props) {
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
-  const search = useCallback(async (q: string) => {
+  const search = useCallback(async (q: string, attr: string, r: string, lvl: string) => {
     if (!q.trim()) {
       setCards([])
       return
@@ -56,7 +69,14 @@ export function CardSearchModal({ deckId, onClose }: Props) {
     setLoading(true)
     try {
       const result = await fetchCards(
-        { fuzzyName: q.trim(), limit: RESULTS_LIMIT, page: 1 },
+        {
+          fuzzyName: q.trim(),
+          limit: RESULTS_LIMIT,
+          page: 1,
+          ...(attr ? { attribute: attr } : {}),
+          ...(r ? { race: r } : {}),
+          ...(lvl ? { level: Number(lvl) } : {}),
+        },
         controller.signal
       )
       setCards(result.cards)
@@ -70,11 +90,14 @@ export function CardSearchModal({ deckId, onClose }: Props) {
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => search(query), SEARCH_DEBOUNCE_MS)
+    debounceRef.current = setTimeout(
+      () => search(query, attribute, race, level),
+      SEARCH_DEBOUNCE_MS
+    )
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
-  }, [query, search])
+  }, [query, attribute, race, level, search])
 
   function handleAdd(card: Card) {
     const extra = isExtraDeckCard(card)
@@ -149,10 +172,64 @@ export function CardSearchModal({ deckId, onClose }: Props) {
               )
             })}
           </select>
+          <button
+            className={`${styles.filterToggleBtn} ${filtersOpen || hasActiveFilters ? styles.filterToggleBtnActive : ''}`}
+            onClick={() => setFiltersOpen(v => !v)}
+            title={t('decks.search.filters')}
+            aria-pressed={filtersOpen}
+          >
+            ⊞
+          </button>
           <button className={styles.closeBtn} onClick={onClose} aria-label={t('ui.close')}>
             ✕
           </button>
         </div>
+
+        {filtersOpen && (
+          <div className={styles.filterRow}>
+            <select
+              className={styles.filterSelect}
+              value={attribute}
+              onChange={e => setAttribute(e.target.value)}
+            >
+              <option value="">{t('catalog.filters.attribute')}</option>
+              {ATTRIBUTES.map(a => (
+                <option key={a} value={a}>
+                  {a}
+                </option>
+              ))}
+            </select>
+            <select
+              className={styles.filterSelect}
+              value={race}
+              onChange={e => setRace(e.target.value)}
+            >
+              <option value="">{t('catalog.filters.race')}</option>
+              {ALL_RACES.map(r => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
+              ))}
+            </select>
+            <select
+              className={styles.filterSelect}
+              value={level}
+              onChange={e => setLevel(e.target.value)}
+            >
+              <option value="">{t('catalog.filters.level')}</option>
+              {LEVELS.map(l => (
+                <option key={l} value={String(l)}>
+                  {l}
+                </option>
+              ))}
+            </select>
+            {hasActiveFilters && (
+              <button className={styles.clearFiltersBtn} onClick={clearFilters}>
+                {t('decks.search.clearFilters')}
+              </button>
+            )}
+          </div>
+        )}
 
         <div className={styles.results}>
           {loading ? (

@@ -109,6 +109,15 @@
   padding: 4px 6px;
   border-radius: var(--radius-sm);
   background: var(--surface-card);
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.row:hover {
+  background: rgba(19, 184, 255, 0.1);
 }
 
 .cardName {

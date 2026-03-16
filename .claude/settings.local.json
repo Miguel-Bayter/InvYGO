@@ -30,7 +30,8 @@
       "WebFetch(domain:www.figma.com)",
       "WebFetch(domain:medium.com)",
       "Bash(npx eslint:*)",
-      "Bash(python3 -c \"from PIL import Image; print\\('ok'\\)\" 2>&1 || python -c \"from PIL import Image; print\\('ok'\\)\" 2>&1)"
+      "Bash(python3 -c \"from PIL import Image; print\\('ok'\\)\" 2>&1 || python -c \"from PIL import Image; print\\('ok'\\)\" 2>&1)",
+      "Bash(cd:*)"
     ]
   }
 }
