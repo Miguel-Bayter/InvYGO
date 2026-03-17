@@ -194,25 +194,26 @@ Definition of Done:
 
 ---
 
-## Sprint 8 (2026-04-13 al 2026-04-17) - Hardening y beta
+## Sprint 8 (2026-04-13 al 2026-04-17) - Hardening y beta ✓ COMPLETADO
 
 Objetivo: estabilidad para usuarios reales.
 
 Checklist:
 
-- [ ] Tests E2E de flujo critico completo.
-- [ ] Optimizacion de performance (imagenes, cache, render).
-- [ ] Fortalecer manejo de errores y reintentos.
-- [ ] Revisar seguridad de API consumption y sesiones.
-- [ ] Checklist de release y documentacion final.
+- [x] Tests E2E de flujo critico completo — Playwright configurado con 6 smoke tests (homepage, catalog search, inventory, deck builder, navegacion entre paginas).
+- [x] Optimizacion de performance (imagenes, cache, render) — Lazy loading de rutas con React.lazy + Suspense; code splitting automatico por pagina; PageFallback mientras carga el chunk.
+- [x] Fortalecer manejo de errores y reintentos — ErrorBoundary global en main.tsx; pantalla de recuperacion amigable con detalle del error; usuarios no pierden datos (localStorage intacto).
+- [x] Revisar seguridad de API consumption y sesiones — ReactQueryDevtools eliminado de produccion (solo dev con import.meta.env.DEV); links externos con rel="noopener noreferrer"; sin API keys en codigo fuente; localStorage solo guarda datos no sensibles.
+- [x] Checklist de release y documentacion final — Meta tags OG/Twitter en index.html; title descriptivo; favicon configurado; README enterprise completo.
 
 Entregables:
 
-- Version beta del frontend lista para validacion con usuarios.
+- Version beta del frontend lista para validacion con usuarios. ✓
+- Playwright smoke tests ejecutables con `npm run test:e2e`. ✓
 
 Definition of Done:
 
-- Flujo completo estable y demo funcional de punta a punta.
+- Flujo completo estable y demo funcional de punta a punta. ✓
 
 ---
 

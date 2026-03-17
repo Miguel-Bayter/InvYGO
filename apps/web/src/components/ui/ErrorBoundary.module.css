@@ -1,0 +1,75 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: var(--surface-bg, #0d0f14);
+}
+
+.card {
+  background: var(--surface-panel);
+  border: 1px solid rgba(255, 93, 93, 0.3);
+  border-radius: var(--radius-md);
+  padding: var(--space-8) var(--space-6);
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(255, 93, 93, 0.08);
+}
+
+.icon {
+  font-size: 2.5rem;
+  color: var(--color-red-warning, #ff5d5d);
+  margin-bottom: var(--space-4);
+}
+
+.title {
+  font-family: var(--font-ygo);
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-white);
+  margin: 0 0 var(--space-3);
+}
+
+.message {
+  font-size: 0.84rem;
+  color: var(--color-muted);
+  line-height: 1.6;
+  margin: 0 0 var(--space-4);
+}
+
+.detail {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--color-red-warning, #ff5d5d);
+  background: rgba(255, 93, 93, 0.06);
+  border: 1px solid rgba(255, 93, 93, 0.2);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0 0 var(--space-4);
+}
+
+.btn {
+  background: var(--color-cyan-hud);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #000;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.btn:hover {
+  opacity: 0.85;
+}

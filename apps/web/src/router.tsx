@@ -1,9 +1,16 @@
+import { lazy, Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import { AppLayout } from './components/layout/AppLayout'
-import { HomePage } from './pages/HomePage'
-import { CatalogPage } from './pages/CatalogPage'
-import { InventoryPage } from './pages/InventoryPage'
-import { DecksPage } from './pages/DecksPage'
+import { PageFallback } from './components/ui/PageFallback'
+
+const HomePage = lazy(() => import('./pages/HomePage').then(m => ({ default: m.HomePage })))
+const CatalogPage = lazy(() =>
+  import('./pages/CatalogPage').then(m => ({ default: m.CatalogPage }))
+)
+const InventoryPage = lazy(() =>
+  import('./pages/InventoryPage').then(m => ({ default: m.InventoryPage }))
+)
+const DecksPage = lazy(() => import('./pages/DecksPage').then(m => ({ default: m.DecksPage })))
 
 export const router = createBrowserRouter([
   {
@@ -12,19 +19,35 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <HomePage />
+          </Suspense>
+        ),
       },
       {
         path: 'catalog',
-        element: <CatalogPage />,
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <CatalogPage />
+          </Suspense>
+        ),
       },
       {
         path: 'inventory',
-        element: <InventoryPage />,
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <InventoryPage />
+          </Suspense>
+        ),
       },
       {
         path: 'decks',
-        element: <DecksPage />,
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <DecksPage />
+          </Suspense>
+        ),
       },
     ],
   },
