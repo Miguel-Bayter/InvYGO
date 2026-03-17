@@ -179,6 +179,15 @@
       "critical": "no copies",
       "partial": "partial",
       "searchInCatalog": "Search in catalog"
+    },
+    "prices": {
+      "viewPrices": "View prices in stores",
+      "subtitle": "Prices by marketplace · click to visit the store",
+      "price": "Price",
+      "sortLowHigh": "Sort: low to high",
+      "sortHighLow": "Sort: high to low",
+      "noPrice": "N/A",
+      "searchInStore": "Search"
     }
   },
   "inventory": {

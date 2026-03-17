@@ -113,12 +113,13 @@ export function DeckBuilderView({ deck }: Props) {
 
     setImporting(true)
 
-    // Fetch in batches of 5 to avoid rate limits.
-    // Validate that the returned card id matches the queried id — if the API
-    // does not support the `id` filter it would return a random card instead.
+    // Fetch in batches of 5 with a 150 ms pause between batches to avoid
+    // hitting the API rate limit. Without the pause, rapid-fire batches on a
+    // large deck (40+ unique cards) trigger 429s and cards fail to resolve.
     const allIds = [...new Set([...main, ...extra, ...side])]
     const cardMap = new Map<string, Card>()
     const BATCH = 5
+    const BATCH_DELAY_MS = 150
 
     for (let i = 0; i < allIds.length; i += BATCH) {
       await Promise.allSettled(
@@ -127,6 +128,9 @@ export function DeckBuilderView({ deck }: Props) {
           if (card) cardMap.set(id, card)
         })
       )
+      if (i + BATCH < allIds.length) {
+        await new Promise(resolve => setTimeout(resolve, BATCH_DELAY_MS))
+      }
     }
 
     const entries: DeckEntry[] = []

@@ -58,29 +58,56 @@ export async function fetchArchetypes(): Promise<string[]> {
  *
  * Returns null if neither strategy resolves the passcode.
  */
+function isTransientError(error: unknown): boolean {
+  const status =
+    error && typeof error === 'object' && 'response' in error
+      ? ((error as { response?: { status?: number } }).response?.status ?? 0)
+      : 0
+  return status === 429 || status === 503 || status === 0
+}
+
+async function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 export async function fetchCardByPasscode(passcode: string): Promise<Card | null> {
-  // Strategy 1 – individual resource endpoint
-  try {
-    const res = await ygoApiClient.get<RawSingleCardResponse>(`/cards/${passcode}`)
-    const item = res.data.data
-    if (item?.id === passcode) {
-      const [card] = normalizeCardsResponse({
-        data: [item],
-        meta: { totalItems: 1, totalPages: 1, currentPage: 1, itemsPerPage: 1 },
-        links: { self: '', first: null, prev: null, next: null, last: null },
-      }).cards
-      return card ?? null
+  // Strategy 1 – individual resource endpoint (with 1 retry on transient errors)
+  for (let attempt = 0; attempt <= 1; attempt++) {
+    try {
+      const res = await ygoApiClient.get<RawSingleCardResponse>(`/cards/${passcode}`)
+      const item = res.data.data
+      if (item?.id === passcode) {
+        const [card] = normalizeCardsResponse({
+          data: [item],
+          meta: { totalItems: 1, totalPages: 1, currentPage: 1, itemsPerPage: 1 },
+          links: { self: '', first: null, prev: null, next: null, last: null },
+        }).cards
+        return card ?? null
+      }
+      break // response ok but id mismatch — fall through to strategy 2
+    } catch (error) {
+      if (attempt === 0 && isTransientError(error)) {
+        await delay(300)
+        continue
+      }
+      break // fall through to strategy 2
     }
-  } catch {
-    /* fall through to strategy 2 */
   }
 
-  // Strategy 2 – collection filtered by id
-  try {
-    const res = await fetchCards({ id: passcode, limit: 1, page: 1 })
-    const card = res.cards[0]
-    return card && card.id === passcode ? card : null
-  } catch {
-    return null
+  // Strategy 2 – collection filtered by id (with 1 retry on transient errors)
+  for (let attempt = 0; attempt <= 1; attempt++) {
+    try {
+      const res = await fetchCards({ id: passcode, limit: 1, page: 1 })
+      const card = res.cards[0]
+      return card && card.id === passcode ? card : null
+    } catch (error) {
+      if (attempt === 0 && isTransientError(error)) {
+        await delay(300)
+        continue
+      }
+      return null
+    }
   }
+
+  return null
 }

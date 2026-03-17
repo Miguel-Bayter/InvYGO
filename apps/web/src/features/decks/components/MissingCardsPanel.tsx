@@ -1,8 +1,10 @@
-import { useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import type { Deck, DeckSection } from '../types'
+import type { CardPrice } from '../../catalog/types'
 import { useInventory } from '../../inventory/context'
+import { CardPricesModal } from './CardPricesModal'
 import styles from './MissingCardsPanel.module.css'
 
 interface MissingEntry {
@@ -12,6 +14,13 @@ interface MissingEntry {
   missing: number
   owned: number
   needed: number
+  prices: CardPrice[]
+}
+
+interface PricesTarget {
+  cardId: string
+  name: string
+  prices: CardPrice[]
 }
 
 const SECTION_ORDER: DeckSection[] = ['main', 'extra', 'side']
@@ -24,9 +33,15 @@ export function MissingCardsPanel({ deck }: Props) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { getItem } = useInventory()
+  const [pricesTarget, setPricesTarget] = useState<PricesTarget | null>(null)
 
   function handleRowClick(cardName: string) {
     navigate(`/catalog?name=${encodeURIComponent(cardName)}`)
+  }
+
+  function handlePricesClick(e: React.MouseEvent, entry: MissingEntry) {
+    e.stopPropagation()
+    setPricesTarget({ cardId: entry.cardId, name: entry.name, prices: entry.prices })
   }
 
   const { missingList, totalCards, ownedCards, totalMissing } = useMemo(() => {
@@ -49,6 +64,7 @@ export function MissingCardsPanel({ deck }: Props) {
           missing,
           owned: Math.min(entry.quantity, inventoryQty),
           needed: entry.quantity,
+          prices: entry.card.prices,
         })
       }
     }
@@ -71,65 +87,84 @@ export function MissingCardsPanel({ deck }: Props) {
   const isComplete = missingList.length === 0
 
   return (
-    <div className={styles.panel}>
-      <div className={`${styles.header} ${isComplete ? styles.completeHeader : ''}`}>
-        <div className={styles.titleGroup}>
-          <span className={`${styles.icon} ${isComplete ? styles.completeIcon : ''}`}>
-            {isComplete ? '✓' : '⚠'}
-          </span>
-          <span className={`${styles.title} ${isComplete ? styles.completeTitle : ''}`}>
-            {t('decks.missing.title')}
+    <>
+      <div className={styles.panel}>
+        <div className={`${styles.header} ${isComplete ? styles.completeHeader : ''}`}>
+          <div className={styles.titleGroup}>
+            <span className={`${styles.icon} ${isComplete ? styles.completeIcon : ''}`}>
+              {isComplete ? '✓' : '⚠'}
+            </span>
+            <span className={`${styles.title} ${isComplete ? styles.completeTitle : ''}`}>
+              {t('decks.missing.title')}
+            </span>
+          </div>
+          <span className={`${styles.badge} ${isComplete ? styles.completeBadge : ''}`}>
+            {isComplete ? t('decks.missing.complete') : `−${totalMissing}`}
           </span>
         </div>
-        <span className={`${styles.badge} ${isComplete ? styles.completeBadge : ''}`}>
-          {isComplete ? t('decks.missing.complete') : `−${totalMissing}`}
-        </span>
-      </div>
 
-      {isComplete ? (
-        <div className={styles.allGood}>{t('decks.missing.allGood')}</div>
-      ) : (
-        <div className={styles.list}>
-          {grouped.map(({ section, items }) => (
-            <div key={section} className={styles.group}>
-              <div className={styles.groupHeader}>
-                {t(`decks.section.${section}`)}
-                <span className={styles.groupCount}>
-                  {items.reduce((sum, i) => sum + i.missing, 0)}
-                </span>
+        {isComplete ? (
+          <div className={styles.allGood}>{t('decks.missing.allGood')}</div>
+        ) : (
+          <div className={styles.list}>
+            {grouped.map(({ section, items }) => (
+              <div key={section} className={styles.group}>
+                <div className={styles.groupHeader}>
+                  {t(`decks.section.${section}`)}
+                  <span className={styles.groupCount}>
+                    {items.reduce((sum, i) => sum + i.missing, 0)}
+                  </span>
+                </div>
+                {items.map(item => {
+                  const isCritical = item.owned === 0
+                  return (
+                    <div key={`${item.cardId}_${item.section}`} className={styles.rowWrapper}>
+                      <button
+                        className={styles.row}
+                        onClick={() => handleRowClick(item.name)}
+                        title={t('decks.missing.searchInCatalog')}
+                      >
+                        <span className={styles.cardName}>{item.name}</span>
+                        <span
+                          className={`${styles.ratio} ${isCritical ? styles.ratioCritical : styles.ratioPartial}`}
+                        >
+                          {item.owned}/{item.needed}
+                        </span>
+                      </button>
+                      <button
+                        className={styles.priceBtn}
+                        onClick={e => handlePricesClick(e, item)}
+                        title={t('decks.prices.viewPrices')}
+                      >
+                        $
+                      </button>
+                    </div>
+                  )
+                })}
               </div>
-              {items.map(item => {
-                const isCritical = item.owned === 0
-                return (
-                  <button
-                    key={`${item.cardId}_${item.section}`}
-                    className={styles.row}
-                    onClick={() => handleRowClick(item.name)}
-                    title={t('decks.missing.searchInCatalog')}
-                  >
-                    <span className={styles.cardName}>{item.name}</span>
-                    <span
-                      className={`${styles.ratio} ${isCritical ? styles.ratioCritical : styles.ratioPartial}`}
-                    >
-                      {item.owned}/{item.needed}
-                    </span>
-                  </button>
-                )
-              })}
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
 
-      <div className={styles.completionBar}>
-        <div className={styles.completionLabel}>
-          <span>{t('decks.missing.coverage')}</span>
-          <span className={styles.completionPct}>{pct}%</span>
-        </div>
-        <div className={styles.barTrack}>
-          <div className={styles.barFill} style={{ width: `${pct}%` }} />
+        <div className={styles.completionBar}>
+          <div className={styles.completionLabel}>
+            <span>{t('decks.missing.coverage')}</span>
+            <span className={styles.completionPct}>{pct}%</span>
+          </div>
+          <div className={styles.barTrack}>
+            <div className={styles.barFill} style={{ width: `${pct}%` }} />
+          </div>
         </div>
       </div>
-    </div>
+
+      {pricesTarget && (
+        <CardPricesModal
+          cardId={pricesTarget.cardId}
+          cardName={pricesTarget.name}
+          prices={pricesTarget.prices}
+          onClose={() => setPricesTarget(null)}
+        />
+      )}
+    </>
   )
 }

@@ -170,25 +170,27 @@ Definition of Done:
 
 ---
 
-## Sprint 7 (2026-04-06 al 2026-04-10) - Marketplaces y accion de compra
+## Sprint 7 (2026-04-06 al 2026-04-10) - Marketplaces y accion de compra ✓ COMPLETADO
 
 Objetivo: convertir faltantes en accion.
 
 Checklist:
 
-- [ ] Mostrar `prices[]` por marketplace en carta faltante.
-- [ ] Botones "Buscar en tienda" por marketplace.
-- [ ] Construir links de redireccion por nombre de carta.
-- [ ] Manejar casos sin precio disponible.
-- [ ] Instrumentar tracking de clicks salientes.
+- [x] Mostrar `prices[]` por marketplace en carta faltante — modal CardPricesModal con los 5 marketplaces (TCGPlayer, CardMarket, eBay, Amazon, CoolStuffInc).
+- [x] Botones "Buscar en tienda" por marketplace — links directos a cada marketplace abriendo en pestaña nueva.
+- [x] Construir links de redireccion por nombre de carta — URLs generadas por nombre para cada marketplace.
+- [x] Manejar casos sin precio disponible — muestra "N/D" cuando price = 0, link sigue disponible.
+- [x] Instrumentar tracking de clicks salientes — registrado en localStorage bajo clave `ygo_marketplace_clicks`.
+- [x] Ordenar precios alto→bajo / bajo→alto — toggle sorteable dentro del modal.
 
 Entregables:
 
-- Flujo faltante -> ver precio -> ir a tienda.
+- Flujo faltante -> ver precio -> ir a tienda. ✓
+- Todos los marketplaces visibles con precio y ordenamiento. ✓
 
 Definition of Done:
 
-- Usuario puede salir a marketplace desde faltantes.
+- Usuario puede salir a marketplace desde faltantes. ✓
 
 ---
 

@@ -8,7 +8,7 @@ if (!YGO_API_BASE_URL) {
 
 export const ygoApiClient = axios.create({
   baseURL: YGO_API_BASE_URL,
-  timeout: 10_000,
+  timeout: 6_000,
   headers: {
     Accept: 'application/json',
   },

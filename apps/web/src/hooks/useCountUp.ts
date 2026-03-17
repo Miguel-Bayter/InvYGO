@@ -11,8 +11,10 @@ export function useCountUp(target: number, duration = 1200): number {
 
   useEffect(() => {
     if (target === 0) {
-      setCount(0)
-      return
+      cancelAnimationFrame(rafRef.current)
+      startRef.current = null
+      const id = requestAnimationFrame(() => setCount(0))
+      return () => cancelAnimationFrame(id)
     }
 
     startRef.current = null

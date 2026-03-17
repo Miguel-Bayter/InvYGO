@@ -179,6 +179,15 @@
       "critical": "sin copias",
       "partial": "parcial",
       "searchInCatalog": "Buscar en catálogo"
+    },
+    "prices": {
+      "viewPrices": "Ver precios en tiendas",
+      "subtitle": "Precios por marketplace · clickeá para ir a la tienda",
+      "price": "Precio",
+      "sortLowHigh": "Ordenar: menor a mayor",
+      "sortHighLow": "Ordenar: mayor a menor",
+      "noPrice": "N/D",
+      "searchInStore": "Buscar"
     }
   },
   "inventory": {

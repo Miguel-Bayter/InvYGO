@@ -10,9 +10,9 @@ interface UseCardsParams {
 }
 
 const TEXT_DEBOUNCE_MS = 400
-const NUMBER_DEBOUNCE_MS = 600
+const NUMBER_DEBOUNCE_MS = 400
 const CLIENT_FILTER_FETCH_LIMIT = 100
-const PAGE_SCAN_DELAY_MS = 90
+const PAGE_SCAN_DELAY_MS = 50
 const MAX_RETRIES = 5
 const RETRY_BASE_MS = 400
 const RATE_LIMIT_COOLDOWN_MS = 7000
@@ -390,7 +390,14 @@ export function useCards({ filters, page, limit = 20 }: UseCardsParams) {
           ),
     placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 5,
-    retry: false,
+    retry: (failureCount, error) => {
+      const status =
+        error && typeof error === 'object' && 'response' in error
+          ? ((error as { response?: { status?: number } }).response?.status ?? 0)
+          : 0
+      if (status === 400 || status === 404) return false
+      return failureCount < 1
+    },
   })
 
   return { ...query, isDebouncing }
