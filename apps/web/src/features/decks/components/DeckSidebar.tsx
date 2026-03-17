@@ -3,12 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { useDecks } from '../context'
 import type { Deck, DeckSection } from '../types'
 import { DECK_LIMITS } from '../types'
+import { useDeckImport } from '../hooks/useDeckImport'
 import styles from './DeckSidebar.module.css'
 
 export function DeckSidebar() {
   const { t } = useTranslation()
   const { decks, activeDeckId, createDeck, cloneDeck, deleteDeck, renameDeck, setActiveDeck } =
     useDecks()
+  const { importing, importRef, triggerImport, handleImportFile } = useDeckImport()
   const [renamingId, setRenamingId] = useState<string | null>(null)
   const [renameValue, setRenameValue] = useState('')
   const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null)
@@ -61,9 +63,26 @@ export function DeckSidebar() {
     <aside className={styles.sidebar}>
       <div className={styles.header}>
         <span className={styles.title}>{t('decks.sidebar.title')}</span>
-        <button className={styles.newBtn} onClick={handleCreate}>
-          + {t('decks.sidebar.new')}
-        </button>
+        <div className={styles.headerBtns}>
+          <button
+            className={styles.importBtn}
+            onClick={triggerImport}
+            disabled={importing}
+            title={t('decks.builder.import')}
+          >
+            {importing ? '…' : '↑'}
+          </button>
+          <input
+            ref={importRef}
+            type="file"
+            accept=".json,.ydk,text/plain"
+            style={{ display: 'none' }}
+            onChange={handleImportFile}
+          />
+          <button className={styles.newBtn} onClick={handleCreate}>
+            + {t('decks.sidebar.new')}
+          </button>
+        </div>
       </div>
 
       <div className={styles.list}>

@@ -1,17 +1,14 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { Deck, DeckEntry, DeckSection } from '../types'
+import type { Deck, DeckSection } from '../types'
 import { DECK_LIMITS } from '../types'
-import { useDecks } from '../context'
 import { DeckEntryRow } from './DeckEntryRow'
 import { DeckCardTile } from './DeckCardTile'
 import { MissingCardsPanel } from './MissingCardsPanel'
 import { CardSearchModal } from './CardSearchModal'
 import { ViewToggle } from '../../catalog/components/ViewToggle'
 import type { ViewMode } from '../../catalog/components/ViewToggle'
-import { fetchCardByPasscode } from '../../catalog/api'
-import type { Card } from '../../catalog/types'
-import { useToast } from '../../../components/ui/ToastProvider'
+import { useDeckImport } from '../hooks/useDeckImport'
 import styles from './DeckBuilderView.module.css'
 
 const SECTIONS: DeckSection[] = ['main', 'extra', 'side']
@@ -22,12 +19,9 @@ interface Props {
 
 export function DeckBuilderView({ deck }: Props) {
   const { t } = useTranslation()
-  const { importDeck } = useDecks()
-  const { showToast } = useToast()
+  const { importing, importRef, triggerImport, handleImportFile } = useDeckImport()
   const [searchOpen, setSearchOpen] = useState(false)
   const [viewMode, setViewMode] = useState<ViewMode>('list')
-  const [importing, setImporting] = useState(false)
-  const importRef = useRef<HTMLInputElement>(null)
 
   const safeName = deck.name.replace(/[^a-z0-9]/gi, '_')
 
@@ -62,135 +56,6 @@ export function DeckBuilderView({ deck }: Props) {
     for (const entry of deck.entries.filter(e => e.section === 'side'))
       for (let i = 0; i < entry.quantity; i++) lines.push(entry.cardId)
     triggerDownload(lines.join('\n'), `${safeName}.ydk`, 'text/plain')
-  }
-
-  function handleJsonImport(content: string) {
-    try {
-      const raw = JSON.parse(content) as unknown
-      if (
-        typeof raw !== 'object' ||
-        raw === null ||
-        typeof (raw as Record<string, unknown>).name !== 'string' ||
-        !Array.isArray((raw as Record<string, unknown>).entries)
-      )
-        throw new Error('invalid')
-      const data = raw as Omit<Deck, 'id'>
-      importDeck(data)
-      showToast(t('decks.builder.importSuccess', { name: data.name }), 'success')
-    } catch {
-      showToast(t('decks.builder.importError'), 'error')
-    }
-  }
-
-  async function handleYdkImport(content: string, fileName: string) {
-    const main: string[] = []
-    const extra: string[] = []
-    const side: string[] = []
-    let current: string[] | null = null
-
-    for (const line of content.split(/\r?\n/)) {
-      const trimmed = line.trim()
-      if (trimmed === '#main') {
-        current = main
-        continue
-      }
-      if (trimmed === '#extra') {
-        current = extra
-        continue
-      }
-      if (trimmed === '!side') {
-        current = side
-        continue
-      }
-      if (trimmed.startsWith('#') || trimmed === '') continue
-      if (current && /^\d+$/.test(trimmed)) current.push(trimmed)
-    }
-
-    if (main.length + extra.length + side.length === 0) {
-      showToast(t('decks.builder.importError'), 'error')
-      return
-    }
-
-    setImporting(true)
-
-    // Fetch in batches of 5 with a 150 ms pause between batches to avoid
-    // hitting the API rate limit. Without the pause, rapid-fire batches on a
-    // large deck (40+ unique cards) trigger 429s and cards fail to resolve.
-    const allIds = [...new Set([...main, ...extra, ...side])]
-    const cardMap = new Map<string, Card>()
-    const BATCH = 5
-    const BATCH_DELAY_MS = 150
-
-    for (let i = 0; i < allIds.length; i += BATCH) {
-      await Promise.allSettled(
-        allIds.slice(i, i + BATCH).map(async id => {
-          const card = await fetchCardByPasscode(id)
-          if (card) cardMap.set(id, card)
-        })
-      )
-      if (i + BATCH < allIds.length) {
-        await new Promise(resolve => setTimeout(resolve, BATCH_DELAY_MS))
-      }
-    }
-
-    const entries: DeckEntry[] = []
-    const sectionMap: [DeckSection, string[]][] = [
-      ['main', main],
-      ['extra', extra],
-      ['side', side],
-    ]
-    let totalUnique = 0
-    let totalResolved = 0
-
-    for (const [section, ids] of sectionMap) {
-      const counts = new Map<string, number>()
-      for (const id of ids) counts.set(id, (counts.get(id) ?? 0) + 1)
-      for (const [id, qty] of counts) {
-        totalUnique++
-        const card = cardMap.get(id)
-        if (card) {
-          entries.push({ cardId: id, card, quantity: Math.min(qty, 3), section })
-          totalResolved++
-        }
-      }
-    }
-
-    setImporting(false)
-
-    if (entries.length === 0) {
-      showToast(t('decks.builder.importYdkNoCards'), 'error')
-      return
-    }
-
-    const deckName = fileName.replace(/\.ydk$/i, '').trim() || 'Imported Deck'
-    importDeck({
-      name: deckName,
-      entries,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    })
-
-    if (totalResolved < totalUnique) {
-      showToast(
-        t('decks.builder.importYdkPartial', { imported: totalResolved, total: totalUnique }),
-        'warning'
-      )
-    } else {
-      showToast(t('decks.builder.importSuccess', { name: deckName }), 'success')
-    }
-  }
-
-  function handleImportFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (importRef.current) importRef.current.value = ''
-    if (!file) return
-    const reader = new FileReader()
-    if (file.name.toLowerCase().endsWith('.ydk')) {
-      reader.onload = () => void handleYdkImport(reader.result as string, file.name)
-    } else {
-      reader.onload = () => handleJsonImport(reader.result as string)
-    }
-    reader.readAsText(file)
   }
 
   const sectionCounts = SECTIONS.reduce<Record<DeckSection, number>>(
@@ -244,11 +109,7 @@ export function DeckBuilderView({ deck }: Props) {
           <button className={styles.actionBtn} onClick={handleExportYdk}>
             ↓ {t('decks.builder.exportYdk')}
           </button>
-          <button
-            className={styles.actionBtn}
-            onClick={() => importRef.current?.click()}
-            disabled={importing}
-          >
+          <button className={styles.actionBtn} onClick={triggerImport} disabled={importing}>
             {importing ? t('decks.builder.importing') : `↑ ${t('decks.builder.import')}`}
           </button>
           <input
@@ -266,65 +127,48 @@ export function DeckBuilderView({ deck }: Props) {
 
       <div className={styles.layout}>
         <div className={styles.sections}>
-          {viewMode === 'gallery'
-            ? /* Gallery mode: flat grid grouped by section */
-              SECTIONS.map(section => {
-                const entries = deck.entries.filter(e => e.section === section)
-                const count = sectionCounts[section]
-                const { max } = DECK_LIMITS[section]
-                return (
-                  <div key={section} className={styles.sectionBlock}>
-                    <div className={styles.sectionHeader}>
-                      <span className={styles.sectionLabel}>{t(`decks.section.${section}`)}</span>
-                      <span className={`${styles.sectionCount} ${getCountColor(section)}`}>
-                        {count}/{max}
-                      </span>
+          {SECTIONS.map(section => {
+            const entries = deck.entries.filter(e => e.section === section)
+            const count = sectionCounts[section]
+            const { max } = DECK_LIMITS[section]
+            return (
+              <div key={section} className={styles.sectionBlock}>
+                <div className={styles.sectionHeader}>
+                  <span className={styles.sectionLabel}>{t(`decks.section.${section}`)}</span>
+                  <span className={`${styles.sectionCount} ${getCountColor(section)}`}>
+                    {count}/{max}
+                  </span>
+                </div>
+                {viewMode === 'gallery' ? (
+                  entries.length === 0 ? (
+                    <p className={styles.emptySection}>{t('decks.builder.emptySection')}</p>
+                  ) : (
+                    <div className={styles.tileGrid}>
+                      {entries.map(entry => (
+                        <DeckCardTile
+                          key={`${entry.cardId}_${entry.section}`}
+                          entry={entry}
+                          deckId={deck.id}
+                        />
+                      ))}
                     </div>
-                    {entries.length === 0 ? (
-                      <p className={styles.emptySection}>{t('decks.builder.emptySection')}</p>
-                    ) : (
-                      <div className={styles.tileGrid}>
-                        {entries.map(entry => (
-                          <DeckCardTile
-                            key={`${entry.cardId}_${entry.section}`}
-                            entry={entry}
-                            deckId={deck.id}
-                          />
-                        ))}
-                      </div>
-                    )}
+                  )
+                ) : entries.length === 0 ? (
+                  <p className={styles.emptySection}>{t('decks.builder.emptySection')}</p>
+                ) : (
+                  <div className={styles.entries}>
+                    {entries.map(entry => (
+                      <DeckEntryRow
+                        key={`${entry.cardId}_${entry.section}`}
+                        entry={entry}
+                        deckId={deck.id}
+                      />
+                    ))}
                   </div>
-                )
-              })
-            : /* List mode */
-              SECTIONS.map(section => {
-                const entries = deck.entries.filter(e => e.section === section)
-                const count = sectionCounts[section]
-                const { max } = DECK_LIMITS[section]
-                return (
-                  <div key={section} className={styles.sectionBlock}>
-                    <div className={styles.sectionHeader}>
-                      <span className={styles.sectionLabel}>{t(`decks.section.${section}`)}</span>
-                      <span className={`${styles.sectionCount} ${getCountColor(section)}`}>
-                        {count}/{max}
-                      </span>
-                    </div>
-                    <div className={styles.entries}>
-                      {entries.length === 0 ? (
-                        <p className={styles.emptySection}>{t('decks.builder.emptySection')}</p>
-                      ) : (
-                        entries.map(entry => (
-                          <DeckEntryRow
-                            key={`${entry.cardId}_${entry.section}`}
-                            entry={entry}
-                            deckId={deck.id}
-                          />
-                        ))
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
+                )}
+              </div>
+            )
+          })}
         </div>
 
         <MissingCardsPanel deck={deck} />

@@ -24,13 +24,31 @@ export function InventoryPage() {
     return [...items].sort((a, b) => {
       switch (sort) {
         case 'name-asc':
-          return a.card.name.localeCompare(b.card.name)
+          return a.card.name.localeCompare(b.card.name, undefined, {
+            sensitivity: 'base',
+            numeric: true,
+          })
         case 'name-desc':
-          return b.card.name.localeCompare(a.card.name)
+          return b.card.name.localeCompare(a.card.name, undefined, {
+            sensitivity: 'base',
+            numeric: true,
+          })
         case 'qty-desc':
-          return b.quantity - a.quantity
+          return (
+            b.quantity - a.quantity ||
+            a.card.name.localeCompare(b.card.name, undefined, {
+              sensitivity: 'base',
+              numeric: true,
+            })
+          )
         case 'qty-asc':
-          return a.quantity - b.quantity
+          return (
+            a.quantity - b.quantity ||
+            a.card.name.localeCompare(b.card.name, undefined, {
+              sensitivity: 'base',
+              numeric: true,
+            })
+          )
         case 'recent':
         default:
           return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()

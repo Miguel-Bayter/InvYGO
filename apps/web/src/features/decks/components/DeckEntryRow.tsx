@@ -159,8 +159,7 @@ export function DeckEntryRow({ entry, deckId }: Props) {
         >
           ✕
         </button>
-      </div>{' '}
-      {/* end .row */}
+      </div>
       {anchorRect &&
         createPortal(
           <CardTooltip
