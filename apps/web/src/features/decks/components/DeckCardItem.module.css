@@ -10,7 +10,8 @@
 }
 
 .card:hover {
-  border-color: rgba(19, 184, 255, 0.5);
+  border-color: rgba(19, 184, 255, 0.8);
+  animation: arcade-ring-pulse 2s ease-in-out infinite;
 }
 
 /* ── Main layout: image | content ── */

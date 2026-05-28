@@ -1,0 +1,146 @@
+.scanner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--surface-panel);
+  overflow: hidden;
+}
+
+/* Grid overlay */
+.gridOverlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(19, 184, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(19, 184, 255, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  animation: gridShift 3s linear infinite;
+}
+
+/* Scanning beam */
+.scanBeam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(19, 184, 255, 0.8),
+    transparent
+  );
+  box-shadow: 0 0 10px rgba(19, 184, 255, 0.5);
+  animation: scanDown 2s ease-in-out infinite;
+}
+
+/* Corner markers */
+.cornerMarkers {
+  position: absolute;
+  inset: 8px;
+}
+
+.corner {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: rgba(19, 184, 255, 0.4);
+  border-style: solid;
+  border-width: 0;
+}
+
+.corner:nth-child(1) {
+  top: 0;
+  left: 0;
+  border-top-width: 2px;
+  border-left-width: 2px;
+}
+
+.corner:nth-child(2) {
+  top: 0;
+  right: 0;
+  border-top-width: 2px;
+  border-right-width: 2px;
+}
+
+.corner:nth-child(3) {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+}
+
+.corner:nth-child(4) {
+  bottom: 0;
+  right: 0;
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+}
+
+/* Data lines */
+.dataLines {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dataLine {
+  height: 2px;
+  background: rgba(19, 184, 255, 0.3);
+  border-radius: 1px;
+  animation: dataFlicker 1.5s ease-in-out infinite;
+}
+
+.dataLine:nth-child(1) {
+  width: 80%;
+  animation-delay: 0s;
+}
+
+.dataLine:nth-child(2) {
+  width: 60%;
+  animation-delay: 0.2s;
+}
+
+.dataLine:nth-child(3) {
+  width: 40%;
+  animation-delay: 0.4s;
+}
+
+/* Animations */
+@keyframes gridShift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(20px);
+  }
+}
+
+@keyframes scanDown {
+  0%, 100% {
+    top: 0;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  50% {
+    top: 100%;
+  }
+}
+
+@keyframes dataFlicker {
+  0%, 100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}

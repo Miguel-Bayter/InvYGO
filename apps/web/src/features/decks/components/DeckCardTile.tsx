@@ -7,6 +7,7 @@ import { useDecks } from '../context'
 import { useInventory } from '../../inventory/context'
 import { useToast } from '../../../components/ui/ToastProvider'
 import { CardTooltip } from '../../catalog/components/CardTooltip'
+import { ImageScanner } from '@/components/ui/ImageScanner'
 import styles from './DeckCardTile.module.css'
 
 const HOVER_DELAY_MS = 500
@@ -23,6 +24,7 @@ export function DeckCardTile({ entry, deckId }: Props) {
   const { updateQuantity, removeCard, decks } = useDecks()
   const { getItem } = useInventory()
   const [imgError, setImgError] = useState(false)
+  const [imgLoaded, setImgLoaded] = useState(false)
 
   const inventoryQty = getItem(entry.cardId)?.quantity ?? 0
   const missingQty = Math.max(0, entry.quantity - inventoryQty)
@@ -121,19 +123,59 @@ export function DeckCardTile({ entry, deckId }: Props) {
         onMouseLeave={handleMouseLeave}
       >
         <div className={styles.imageWrapper}>
+          {!imgLoaded && !imgError && <ImageScanner />}
+          
           {image && !imgError ? (
             <img
               src={image.imageUrlSmall}
               alt={entry.card.name}
-              className={styles.image}
+              className={`${styles.image} ${imgLoaded ? styles.imageLoaded : ''}`}
               loading="lazy"
+              onLoad={() => setImgLoaded(true)}
               onError={() => setImgError(true)}
             />
           ) : (
             <div className={styles.imageFallback}>
-              <span>⬡</span>
+              <span></span>
             </div>
           )}
+
+          {/* Targeting reticle overlay */}
+          <div className={styles.targetingOverlay}>
+            <div className={styles.targetBorder} />
+            <div className={styles.cornerBrackets}>
+              <span className={styles.bracket} />
+              <span className={styles.bracket} />
+              <span className={styles.bracket} />
+              <span className={styles.bracket} />
+            </div>
+            <div className={styles.scannerSystem}>
+              <div className={styles.scanBeam} />
+              <div className={styles.scanBeamVertical} />
+              <div className={styles.dataPoints}>
+                <span className={styles.dataPoint} />
+                <span className={styles.dataPoint} />
+                <span className={styles.dataPoint} />
+                <span className={styles.dataPoint} />
+                <span className={styles.dataPoint} />
+              </div>
+              <div className={styles.scanGrid} />
+              <div className={styles.cornerMarkers}>
+                <span className={styles.cornerMarker} />
+                <span className={styles.cornerMarker} />
+                <span className={styles.cornerMarker} />
+                <span className={styles.cornerMarker} />
+              </div>
+            </div>
+            <div className={styles.trackingDots}>
+              <span className={styles.dot} />
+              <span className={styles.dot} />
+              <span className={styles.dot} />
+              <span className={styles.dot} />
+            </div>
+            <div className={styles.crosshair} />
+            <div className={styles.digitalFlicker} />
+          </div>
 
           <span className={styles.badge}>{entry.quantity}</span>
 
@@ -153,7 +195,7 @@ export function DeckCardTile({ entry, deckId }: Props) {
                 onClick={handleRemove}
                 title={t('decks.entry.remove')}
               >
-                ✕
+                
               </button>
             </div>
             <div className={styles.bottomRow}>

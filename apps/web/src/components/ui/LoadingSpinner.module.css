@@ -3,25 +3,240 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-4);
+  gap: var(--space-6);
   padding: var(--space-16);
 }
 
-.ring {
-  width: 48px;
-  height: 48px;
-  border: 3px solid rgba(19, 184, 255, 0.15);
-  border-top-color: var(--color-cyan-hud);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+.loaderContainer {
+  position: relative;
+  width: 64px;
+  height: 64px;
 }
 
+/* ── Scanner variant ──────────────────────────── */
+.ringOuter {
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(19, 184, 255, 0.15);
+  border-top-color: var(--color-cyan-hud);
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+}
+
+.ringMiddle {
+  position: absolute;
+  inset: 8px;
+  border: 2px solid rgba(19, 184, 255, 0.1);
+  border-right-color: rgba(19, 184, 255, 0.6);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite reverse;
+}
+
+.ringInner {
+  position: absolute;
+  inset: 16px;
+  border: 2px dashed rgba(19, 184, 255, 0.2);
+  border-bottom-color: var(--color-cyan-hud);
+  border-radius: 50%;
+  animation: spin 1.5s linear infinite;
+}
+
+.scanLine {
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.scanLine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 50%;
+  background: linear-gradient(to bottom, transparent, var(--color-cyan-hud));
+  transform-origin: bottom center;
+  animation: radarSweep 2s linear infinite;
+}
+
+.coreDot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: var(--color-cyan-hud);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ── Targeting variant ────────────────────────── */
+.targetRing {
+  position: absolute;
+  inset: 4px;
+  border: 2px solid rgba(19, 184, 255, 0.3);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.targetBrackets {
+  position: absolute;
+  inset: 0;
+}
+
+.bracket {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: var(--color-cyan-hud);
+  border-style: solid;
+  border-width: 0;
+}
+
+.bracket:nth-child(1) {
+  top: 0;
+  left: 0;
+  border-top-width: 2px;
+  border-left-width: 2px;
+}
+
+.bracket:nth-child(2) {
+  top: 0;
+  right: 0;
+  border-top-width: 2px;
+  border-right-width: 2px;
+}
+
+.bracket:nth-child(3) {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+}
+
+.bracket:nth-child(4) {
+  bottom: 0;
+  right: 0;
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+}
+
+.targetCrosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  transform: translate(-50%, -50%);
+}
+
+.targetCrosshair::before,
+.targetCrosshair::after {
+  content: '';
+  position: absolute;
+  background: rgba(19, 184, 255, 0.6);
+}
+
+.targetCrosshair::before {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+.targetCrosshair::after {
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+/* ── Datastream variant ───────────────────────── */
+.datastream {
+  position: absolute;
+  inset: 8px;
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.dataBar {
+  width: 4px;
+  background: var(--color-cyan-hud);
+  border-radius: 2px;
+  animation: dataStream 1.2s ease-in-out infinite;
+  animation-delay: calc(var(--bar-index) * 0.1s);
+}
+
+.dataBar:nth-child(1) { height: 20%; }
+.dataBar:nth-child(2) { height: 40%; }
+.dataBar:nth-child(3) { height: 60%; }
+.dataBar:nth-child(4) { height: 80%; }
+.dataBar:nth-child(5) { height: 60%; }
+.dataBar:nth-child(6) { height: 40%; }
+.dataBar:nth-child(7) { height: 20%; }
+
+.dataPulse {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(19, 184, 255, 0.2);
+  border-radius: 4px;
+  animation: dataPulse 2s ease-in-out infinite;
+}
+
+/* ── Animations ───────────────────────────────── */
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
 
+@keyframes radarSweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes dataStream {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scaleY(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes dataPulse {
+  0%, 100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* ── Label ────────────────────────────────────── */
 .label {
   font-family: var(--font-mono);
   font-size: 0.75rem;

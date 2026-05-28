@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import type { InventoryItem } from '../types'
 import { CardTooltip } from '../../catalog/components/CardTooltip'
 import { AddToInventoryModal } from './AddToInventoryModal'
+import { ImageScanner } from '@/components/ui/ImageScanner'
 import styles from './InventoryCardTile.module.css'
 
 interface Props {
@@ -11,18 +12,16 @@ interface Props {
 
 const HOVER_DELAY_MS = 500
 const CLOSE_DELAY_MS = 300
-// On touch-only devices the tooltip is driven by handleTouchStart (instant).
-// Mouse events fire spuriously after touch and must be ignored.
 const IS_TOUCH_DEVICE = window.matchMedia('(hover: none)').matches
 
 export function InventoryCardTile({ item }: Props) {
   const [imgError, setImgError] = useState(false)
+  const [imgLoaded, setImgLoaded] = useState(false)
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
   const [showModal, setShowModal] = useState(false)
   const articleRef = useRef<HTMLElement>(null)
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  // Tracks whether the last interaction was a touch (to prevent ghost click opening modal)
   const wasTouched = useRef(false)
 
   const image = item.card.images[0]
@@ -60,7 +59,6 @@ export function InventoryCardTile({ item }: Props) {
     scheduleClose()
   }
 
-  // Touch on card body → show tooltip (badge tap is handled separately)
   function handleTouchStart() {
     wasTouched.current = true
     cancelClose()
@@ -69,7 +67,6 @@ export function InventoryCardTile({ item }: Props) {
     }
   }
 
-  // Desktop click → open edit modal; touch click is ignored (tooltip was shown instead)
   function handleClick() {
     if (wasTouched.current) {
       wasTouched.current = false
@@ -80,7 +77,6 @@ export function InventoryCardTile({ item }: Props) {
     setShowModal(true)
   }
 
-  // Badge: dedicated touch/click target to open edit modal on mobile
   function handleBadgeTap(e: React.MouseEvent | React.TouchEvent) {
     e.stopPropagation()
     wasTouched.current = false
@@ -89,7 +85,6 @@ export function InventoryCardTile({ item }: Props) {
     setShowModal(true)
   }
 
-  // Close tooltip when tapping outside on mobile
   useEffect(() => {
     if (!anchorRect) return
     function onDocTouch(e: TouchEvent) {
@@ -120,20 +115,60 @@ export function InventoryCardTile({ item }: Props) {
         onTouchStart={handleTouchStart}
       >
         <div className={styles.imageWrapper}>
+          {!imgLoaded && !imgError && <ImageScanner />}
+          
           {image && !imgError ? (
             <img
               src={image.imageUrlSmall}
               alt={item.card.name}
-              className={styles.image}
+              className={`${styles.image} ${imgLoaded ? styles.imageLoaded : ''}`}
               loading="lazy"
+              onLoad={() => setImgLoaded(true)}
               onError={() => setImgError(true)}
             />
           ) : (
             <div className={styles.imageFallback}>
-              <span>⬡</span>
+              <span></span>
             </div>
           )}
-          {/* Badge: tap to open edit modal on mobile, click on desktop */}
+          
+          {/* Targeting reticle overlay */}
+          <div className={styles.targetingOverlay}>
+            <div className={styles.targetBorder} />
+            <div className={styles.cornerBrackets}>
+              <span className={styles.bracket} />
+              <span className={styles.bracket} />
+              <span className={styles.bracket} />
+              <span className={styles.bracket} />
+            </div>
+            <div className={styles.scannerSystem}>
+              <div className={styles.scanBeam} />
+              <div className={styles.scanBeamVertical} />
+              <div className={styles.dataPoints}>
+                <span className={styles.dataPoint} />
+                <span className={styles.dataPoint} />
+                <span className={styles.dataPoint} />
+                <span className={styles.dataPoint} />
+                <span className={styles.dataPoint} />
+              </div>
+              <div className={styles.scanGrid} />
+              <div className={styles.cornerMarkers}>
+                <span className={styles.cornerMarker} />
+                <span className={styles.cornerMarker} />
+                <span className={styles.cornerMarker} />
+                <span className={styles.cornerMarker} />
+              </div>
+            </div>
+            <div className={styles.trackingDots}>
+              <span className={styles.dot} />
+              <span className={styles.dot} />
+              <span className={styles.dot} />
+              <span className={styles.dot} />
+            </div>
+            <div className={styles.crosshair} />
+            <div className={styles.digitalFlicker} />
+          </div>
+          
           <span
             className={`${styles.badge} ${item.quantity > 99 ? styles.badgeWide : ''}`}
             onClick={handleBadgeTap}

@@ -5,6 +5,7 @@ import { ATTRIBUTE_COLOR } from '../constants'
 import { CardTooltip } from './CardTooltip'
 import { AddToInventoryModal } from '../../inventory/components/AddToInventoryModal'
 import { useInventory } from '../../inventory/context'
+import { ImageScanner } from '@/components/ui/ImageScanner'
 import styles from './CardListItem.module.css'
 
 interface Props {
@@ -13,12 +14,11 @@ interface Props {
 
 const HOVER_DELAY_MS = 500
 const CLOSE_DELAY_MS = 300
-// On touch-only devices the tooltip is driven by handleTouchStart (instant).
-// Mouse events fire spuriously after touch and must be ignored.
 const IS_TOUCH_DEVICE = window.matchMedia('(hover: none)').matches
 
 export function CardListItem({ card }: Props) {
   const [imgError, setImgError] = useState(false)
+  const [imgLoaded, setImgLoaded] = useState(false)
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
   const [showModal, setShowModal] = useState(false)
   const articleRef = useRef<HTMLElement>(null)
@@ -77,7 +77,6 @@ export function CardListItem({ card }: Props) {
     setShowModal(true)
   }
 
-  // Close tooltip when tapping outside on mobile
   useEffect(() => {
     if (!anchorRect) return
     function onDocTouch(e: TouchEvent) {
@@ -108,17 +107,57 @@ export function CardListItem({ card }: Props) {
       >
         {/* Thumbnail */}
         <div className={styles.thumb}>
+          {!imgLoaded && !imgError && <ImageScanner aspectRatio="59 / 86" />}
+          
           {image && !imgError ? (
             <img
               src={image.imageUrlSmall}
               alt={card.name}
-              className={styles.img}
+              className={`${styles.img} ${imgLoaded ? styles.imgLoaded : ''}`}
               loading="lazy"
+              onLoad={() => setImgLoaded(true)}
               onError={() => setImgError(true)}
             />
           ) : (
-            <div className={styles.imgFallback}>⬡</div>
+            <div className={styles.imgFallback}></div>
           )}
+          
+          {/* Targeting reticle overlay */}
+          <div className={styles.targetingOverlay}>
+            <div className={styles.targetBorder} />
+            <div className={styles.cornerBrackets}>
+              <span className={styles.bracket} />
+              <span className={styles.bracket} />
+              <span className={styles.bracket} />
+              <span className={styles.bracket} />
+            </div>
+            <div className={styles.scannerSystem}>
+              <div className={styles.scanBeam} />
+              <div className={styles.scanBeamVertical} />
+              <div className={styles.dataPoints}>
+                <span className={styles.dataPoint} />
+                <span className={styles.dataPoint} />
+                <span className={styles.dataPoint} />
+                <span className={styles.dataPoint} />
+                <span className={styles.dataPoint} />
+              </div>
+              <div className={styles.scanGrid} />
+              <div className={styles.cornerMarkers}>
+                <span className={styles.cornerMarker} />
+                <span className={styles.cornerMarker} />
+                <span className={styles.cornerMarker} />
+                <span className={styles.cornerMarker} />
+              </div>
+            </div>
+            <div className={styles.trackingDots}>
+              <span className={styles.dot} />
+              <span className={styles.dot} />
+              <span className={styles.dot} />
+              <span className={styles.dot} />
+            </div>
+            <div className={styles.crosshair} />
+            <div className={styles.digitalFlicker} />
+          </div>
         </div>
 
         {/* Name + type */}
