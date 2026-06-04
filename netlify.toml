@@ -2,6 +2,9 @@
   command = "pnpm --filter web build"
   publish = "apps/web/dist"
 
+[build.environment]
+  VITE_YGO_API_BASE_URL = "/ygo-api/v1"
+
 [[redirects]]
   from = "/ygo-api/*"
   to = "https://ygo-api-wrapper-177404616225.us-central1.run.app/api/:splat"
