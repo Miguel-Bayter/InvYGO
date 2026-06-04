@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import { AppLayout } from './components/layout/AppLayout'
 import { PageFallback } from './components/ui/PageFallback'
+import { ErrorBoundary } from './components/ui/ErrorBoundary'
 
 const HomePage = lazy(() => import('./pages/HomePage').then(m => ({ default: m.HomePage })))
 const CatalogPage = lazy(() =>
@@ -16,6 +17,11 @@ export const router = createBrowserRouter([
   {
     path: '/',
     element: <AppLayout />,
+    errorElement: (
+      <ErrorBoundary>
+        <PageFallback />
+      </ErrorBoundary>
+    ),
     children: [
       {
         index: true,

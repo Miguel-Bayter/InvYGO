@@ -1,9 +1,13 @@
 import axios from 'axios'
 
-const YGO_API_BASE_URL = import.meta.env.VITE_YGO_API_BASE_URL as string
+const YGO_API_BASE_URL = import.meta.env.VITE_YGO_API_BASE_URL ?? ''
 
-if (!YGO_API_BASE_URL) {
-  throw new Error('VITE_YGO_API_BASE_URL is not defined in environment variables')
+if (import.meta.env.DEV && !YGO_API_BASE_URL) {
+  console.warn(
+    '[YGO API] VITE_YGO_API_BASE_URL is not defined. ' +
+      'API calls will fail until this variable is configured. ' +
+      'See .env.example for setup instructions.'
+  )
 }
 
 export const ygoApiClient = axios.create({
