@@ -674,9 +674,14 @@
   }
 }
 
-/* Touch devices */
+/* Touch devices: suppress hover effects (hover sticks on tap) */
 @media (hover: none) {
-  .targetingOverlay {
-    opacity: 0.6;
+  .tile:hover {
+    border-color: var(--color-card-border);
+    transform: none;
+  }
+
+  .tile:hover .targetingOverlay {
+    opacity: 0;
   }
 }

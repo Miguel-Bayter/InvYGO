@@ -683,14 +683,19 @@
   }
 }
 
-/* Always visible on touch-only devices */
+/* Touch devices: suppress hover effects (hover sticks on tap) */
 @media (hover: none) {
-  .addBtn {
+  .tile:hover {
+    border-color: var(--color-card-border);
+    transform: none;
+  }
+
+  .tile:hover .targetingOverlay {
+    opacity: 0;
+  }
+
+  .tile:hover .addBtn {
     opacity: 1;
     transform: scale(1);
-  }
-  
-  .targetingOverlay {
-    opacity: 0.6;
   }
 }

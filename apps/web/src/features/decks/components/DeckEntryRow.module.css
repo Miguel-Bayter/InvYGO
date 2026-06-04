@@ -132,3 +132,10 @@
   color: var(--color-red-warning);
 }
 
+/* Touch devices: suppress hover effects (hover sticks on tap) */
+@media (hover: none) {
+  .row:hover {
+    border-color: var(--border-hud);
+  }
+}
+

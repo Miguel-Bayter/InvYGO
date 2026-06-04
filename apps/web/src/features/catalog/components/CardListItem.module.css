@@ -765,13 +765,18 @@
   }
 }
 
-/* Touch devices: always show add button */
+/* Touch devices: suppress hover effects (hover sticks on tap) */
 @media (hover: none) {
-  .addBtn {
-    opacity: 1;
+  .item:hover {
+    border-color: var(--color-card-border);
+    background: transparent;
   }
-  
-  .targetingOverlay {
-    opacity: 0.6;
+
+  .item:hover .targetingOverlay {
+    opacity: 0;
+  }
+
+  .item:hover .addBtn {
+    opacity: 1;
   }
 }

@@ -786,3 +786,20 @@
     opacity: 0;
   }
 }
+
+/* Touch devices: suppress hover effects (hover sticks on tap) */
+@media (hover: none) {
+  .tile:hover {
+    border-color: var(--border-hud);
+    transform: none;
+  }
+
+  .tile:hover .targetingOverlay {
+    opacity: 0;
+  }
+
+  .tile:hover .actions {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
